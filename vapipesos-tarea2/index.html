@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vapipesos — Vapiano Mundial 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rojo-vap: #d8213b;
+    --negro: #0d0d0d;
+    --crema: #faf7f2;
+    --gris: #6b6b6b;
+    --gris-claro: #e8e4dd;
+    --oro: #f5c518;
+    --verde-ok: #00a86b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--negro);
+    color: var(--crema);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ──────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--negro);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 90% 55% at 50% -10%, rgba(216,33,59,0.22) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(245,197,24,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* grain */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .hero-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 44px 24px 36px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── LOGOS BAR ─────────────────────────────────────────────────────── */
+  .logos-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+
+  .logo-vapiano-text {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 6px;
+    color: var(--rojo-vap);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .logo-vapiano-text .tagline-vap {
+    display: block;
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: rgba(216,33,59,0.6);
+    font-weight: 500;
+    margin-top: 3px;
+    text-align: center;
+  }
+
+  .logos-sep {
+    width: 1px;
+    height: 36px;
+    background: rgba(255,255,255,0.12);
+    flex-shrink: 0;
+  }
+
+  .logo-mundial-text {
+    text-align: left;
+    line-height: 1;
+  }
+
+  .logo-mundial-text .mundial {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--crema);
+    line-height: 1;
+  }
+
+  .logo-mundial-text .anyo {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--oro);
+    line-height: 1;
+  }
+
+  .logo-mundial-text .fifa-tag {
+    display: block;
+    font-size: 8px;
+    letter-spacing: 2.5px;
+    color: rgba(255,255,255,0.3);
+    font-weight: 500;
+    margin-top: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ── TITULAR ───────────────────────────────────────────────────────── */
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 14px;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 18vw, 110px);
+    line-height: 0.85;
+    letter-spacing: 3px;
+    color: var(--crema);
+    margin-bottom: 6px;
+  }
+
+  .hero h1 .vapis-word {
+    color: var(--rojo-vap);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: var(--gris);
+    margin: 18px 0 32px;
+    line-height: 1.65;
+    font-weight: 300;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── MECÁNICA ──────────────────────────────────────────────────────── */
+  .mecanica {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .gol-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 18px 22px;
+    text-align: center;
+    min-width: 106px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gol-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--rojo-vap);
+    opacity: 0.6;
+  }
+
+  .gol-card .goles {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    color: var(--crema);
+    line-height: 1;
+  }
+
+  .gol-card .label {
+    font-size: 10px;
+    color: var(--gris);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .gol-card .monto {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--oro);
+    margin-top: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  /* ── SUCURSAL BAR ──────────────────────────────────────────────────── */
+  .sucursal-bar {
+    background: rgba(216,33,59,0.08);
+    border-top: 1px solid rgba(216,33,59,0.2);
+    border-bottom: 1px solid rgba(216,33,59,0.2);
+    padding: 13px 24px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--gris);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sucursal-bar span {
+    color: var(--rojo-vap);
+    font-weight: 600;
+  }
+
+  /* ── MAIN ──────────────────────────────────────────────────────────── */
+  .main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+  }
+
+  /* ── NAV FECHAS ────────────────────────────────────────────────────── */
+  .nav-fecha {
+    display: flex;
+    gap: 8px;
+    padding: 20px 0 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-fecha::-webkit-scrollbar { display: none; }
+
+  .nav-dia {
+    flex-shrink: 0;
+    padding: 7px 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    color: var(--gris);
+    white-space: nowrap;
+  }
+
+  .nav-dia:hover { border-color: rgba(255,255,255,0.25); color: var(--crema); }
+
+  .nav-dia.activo {
+    background: var(--rojo-vap);
+    border-color: var(--rojo-vap);
+    color: #fff;
+  }
+
+  .nav-dia.tiene-partidos { color: var(--crema); }
+
+  /* ── FECHA HEADER ──────────────────────────────────────────────────── */
+  .fecha-header {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--gris);
+    text-transform: uppercase;
+    padding: 28px 0 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 4px;
+  }
+
+  /* ── PARTIDO CARD ──────────────────────────────────────────────────── */
+  .partido-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+  }
+
+  .partido-card:hover:not(.bloqueado) { padding-left: 6px; }
+
+  .partido-card.seleccionado {
+    padding-left: 6px;
+  }
+
+  .partido-card.seleccionado::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--rojo-vap);
+    border-radius: 2px;
+  }
+
+  .partido-card.bloqueado { opacity: 0.28; cursor: not-allowed; }
+
+  /* Bloque simultáneo */
+  .partido-card.bloque-card {
+    background: rgba(245,197,24,0.03);
+    border: 1px solid rgba(245,197,24,0.1);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin: 6px 0;
+  }
+
+  .partido-card.bloque-card:hover:not(.bloqueado) {
+    border-color: rgba(245,197,24,0.28);
+    padding-left: 16px;
+  }
+
+  .partido-card.bloque-card.seleccionado {
+    border-color: var(--rojo-vap);
+    background: rgba(216,33,59,0.06);
+    padding-left: 16px;
+  }
+
+  .partido-card.bloque-card.seleccionado::before { display: none; }
+
+  .hora {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--oro);
+    min-width: 58px;
+    line-height: 1;
+  }
+
+  .vs-info { flex: 1; }
+
+  .equipos {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--crema);
+    line-height: 1.3;
+  }
+
+  .grupo-tag {
+    font-size: 11px;
+    color: var(--gris);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .selector-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    flex-shrink: 0;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .partido-card.seleccionado .selector-dot {
+    border-color: var(--rojo-vap);
+    background: var(--rojo-vap);
+  }
+
+  .selector-dot::after {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0;
+    transition: opacity 0.18s;
+  }
+
+  .partido-card.seleccionado .selector-dot::after { opacity: 1; }
+
+  .badge-bloque {
+    font-size: 10px;
+    background: rgba(245,197,24,0.12);
+    color: var(--oro);
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 5px;
+    display: inline-block;
+  }
+
+  .badge-bloqueado {
+    font-size: 10px;
+    background: rgba(255,255,255,0.06);
+    color: var(--gris);
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .bloque-partidos .vs-line {
+    font-size: 14px;
+    color: var(--crema);
+    line-height: 1.55;
+    opacity: 0.85;
+  }
+
+  .bloque-sep {
+    font-size: 10px;
+    color: var(--gris);
+    padding: 1px 0;
+    letter-spacing: 1px;
+  }
+
+  /* ── STICKY FOOTER ─────────────────────────────────────────────────── */
+  .sticky-footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(13,13,13,0.97);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 14px 24px 18px;
+    z-index: 100;
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  .sticky-footer.visible { transform: translateY(0); }
+
+  .footer-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .psl-partido {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--crema);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .psl-hora {
+    font-size: 12px;
+    color: var(--gris);
+    margin-top: 2px;
+  }
+
+  .partido-seleccionado-label { flex: 1; min-width: 0; }
+
+  .btn-registrar {
+    background: var(--rojo-vap);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 26px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.18s;
+    flex-shrink: 0;
+  }
+
+  .btn-registrar:hover { opacity: 0.88; }
+
+  /* ── MODAL ─────────────────────────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: #161616;
+    border-radius: 22px 22px 0 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 34px 28px 52px;
+    width: 100%;
+    max-width: 680px;
+    transform: translateY(48px);
+    transition: transform 0.28s cubic-bezier(0.34,1.2,0.64,1);
+    position: relative;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 34px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .partido-confirmado {
+    font-size: 14px;
+    color: var(--rojo-vap);
+    margin-bottom: 26px;
+  }
+
+  .form-group { margin-bottom: 14px; }
+
+  .form-group label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gris);
+    display: block;
+    margin-bottom: 7px;
+  }
+
+  .form-group input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: var(--crema);
+    outline: none;
+    transition: border-color 0.18s;
+    -webkit-appearance: none;
+  }
+
+  .form-group input:focus { border-color: var(--rojo-vap); }
+  .form-group input::placeholder { color: rgba(255,255,255,0.2); }
+
+  .btn-confirmar {
+    width: 100%;
+    background: var(--rojo-vap);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: opacity 0.18s;
+  }
+
+  .btn-confirmar:hover { opacity: 0.88; }
+
+  .modal-nota {
+    font-size: 12px;
+    color: var(--gris);
+    text-align: center;
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+
+  .btn-cerrar {
+    background: none;
+    border: none;
+    color: var(--gris);
+    font-size: 26px;
+    cursor: pointer;
+    position: absolute;
+    top: 18px; right: 22px;
+    line-height: 1;
+  }
+
+  /* ── CONFIRMACIÓN ──────────────────────────────────────────────────── */
+  .confirmacion {
+    text-align: center;
+    padding: 12px 0 4px;
+  }
+
+  .check-circle {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: rgba(0,168,107,0.12);
+    border: 2px solid var(--verde-ok);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 22px;
+    font-size: 30px;
+  }
+
+  .confirmacion h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+
+  .confirmacion p {
+    font-size: 14px;
+    color: var(--gris);
+    line-height: 1.7;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+
+  .vapis-preview {
+    background: rgba(216,33,59,0.08);
+    border: 1px solid rgba(216,33,59,0.18);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin: 22px 0;
+  }
+
+  .vapis-preview .pre-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gris);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .vapis-preview .rango {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--oro);
+    letter-spacing: 1px;
+  }
+
+  /* ── EMPTY ─────────────────────────────────────────────────────────── */
+  .empty-day {
+    padding: 20px 0 10px;
+    color: var(--gris);
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .no-partidos {
+    text-align: center;
+    padding: 56px 24px;
+    color: var(--gris);
+  }
+
+  .no-partidos .icon { font-size: 38px; margin-bottom: 14px; }
+  .no-partidos h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--crema); margin-bottom: 8px; }
+  .no-partidos p { font-size: 14px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-inner">
+
+    <!-- Logos bar: Vapiano + separador + Mundial 2026 -->
+    <div class="logos-bar">
+
+      <!-- Logo Vapiano texto limpio -->
+      <div class="logo-vapiano-text">
+        VAPIANO
+        <span class="tagline-vap">PASTA · PIZZA · BAR</span>
+      </div>
+
+      <div class="logos-sep"></div>
+
+      <!-- Mundial 2026 texto limpio -->
+      <div class="logo-mundial-text">
+        <span class="mundial">MUNDIAL</span>
+        <span class="anyo">2026</span>
+        <span class="fifa-tag">Copa FIFA · México</span>
+      </div>
+
+    </div>
+
+    <p class="hero-eyebrow">Goles = descuentos · Solo el día del partido</p>
+    <h1>GANA<span class="vapis-word">VAPIPESOS</span></h1>
+    <p class="hero-sub">Regístrate en un partido de hoy, y si hay goles recibirás tu cupón por WhatsApp para tu próxima visita a Vapiano.</p>
+
+    <div class="mecanica">
+      <div class="gol-card">
+        <div class="goles">1–2</div>
+        <div class="label">Goles</div>
+        <div class="monto">$100</div>
+      </div>
+      <div class="gol-card">
+        <div class="goles">3–4</div>
+        <div class="label">Goles</div>
+        <div class="monto">$200</div>
+      </div>
+      <div class="gol-card">
+        <div class="goles">5+</div>
+        <div class="label">Goles</div>
+        <div class="monto">$300</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="sucursal-bar" class="sucursal-bar">
+  Sucursal Vapiano <span id="nombre-sucursal">Carso</span>
+</div>
+
+<div class="main">
+  <div id="nav-fechas" class="nav-fecha"></div>
+  <div id="lista-partidos"></div>
+</div>
+
+<!-- Footer sticky -->
+<div class="sticky-footer" id="sticky-footer">
+  <div class="footer-inner">
+    <div class="partido-seleccionado-label">
+      <div class="psl-partido" id="footer-partido">—</div>
+      <div class="psl-hora" id="footer-hora">Selecciona un partido de hoy</div>
+    </div>
+    <button class="btn-registrar" onclick="abrirModal()">Registrarme →</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="cerrarModalSiOverlay(event)">
+  <div class="modal" id="modal">
+    <button class="btn-cerrar" onclick="cerrarModal()">×</button>
+    <div id="modal-contenido"></div>
+  </div>
+</div>
+
+<script>
+// ── SUCURSAL ──────────────────────────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const sucursalMap = {
+  carso:'Carso', reforma:'Reforma', samara:'Samara',
+  vallejo:'Vallejo', tlalnepantla:'Tlalnepantla'
+};
+const sucursalKey = (params.get('s') || 'carso').toLowerCase();
+const sucursalNombre = sucursalMap[sucursalKey] || 'Carso';
+document.getElementById('nombre-sucursal').textContent = sucursalNombre;
+
+// ── 104 PARTIDOS ──────────────────────────────────────────────────────────
+const PARTIDOS = [
+  // JORNADA 1
+  {id:1,  fecha:'2026-06-11', hora:'13:00', grupo:'A', desc:'México vs. Sudáfrica'},
+  {id:2,  fecha:'2026-06-11', hora:'20:00', grupo:'A', desc:'Corea del Sur vs. Chequia'},
+  {id:3,  fecha:'2026-06-12', hora:'13:00', grupo:'B', desc:'Canadá vs. Bosnia & Herzegovina'},
+  {id:4,  fecha:'2026-06-12', hora:'19:00', grupo:'D', desc:'Estados Unidos vs. Paraguay'},
+  {id:5,  fecha:'2026-06-13', hora:'19:00', grupo:'C', desc:'Haití vs. Escocia'},
+  {id:6,  fecha:'2026-06-13', hora:'22:00', grupo:'D', desc:'Australia vs. Turquía'},
+  {id:7,  fecha:'2026-06-13', hora:'16:00', grupo:'C', desc:'Brasil vs. Marruecos'},
+  {id:8,  fecha:'2026-06-13', hora:'13:00', grupo:'B', desc:'Qatar vs. Suiza'},
+  {id:9,  fecha:'2026-06-14', hora:'17:00', grupo:'E', desc:'Costa de Marfil vs. Ecuador'},
+  {id:10, fecha:'2026-06-14', hora:'11:00', grupo:'E', desc:'Alemania vs. Curazao'},
+  {id:11, fecha:'2026-06-14', hora:'14:00', grupo:'F', desc:'Países Bajos vs. Japón'},
+  {id:12, fecha:'2026-06-14', hora:'20:00', grupo:'F', desc:'Suecia vs. Túnez'},
+  {id:13, fecha:'2026-06-15', hora:'16:00', grupo:'H', desc:'Arabia Saudita vs. Uruguay'},
+  {id:14, fecha:'2026-06-15', hora:'10:00', grupo:'H', desc:'España vs. Cabo Verde'},
+  {id:15, fecha:'2026-06-15', hora:'19:00', grupo:'G', desc:'Irán vs. Nueva Zelanda'},
+  {id:16, fecha:'2026-06-15', hora:'13:00', grupo:'G', desc:'Bélgica vs. Egipto'},
+  {id:17, fecha:'2026-06-16', hora:'13:00', grupo:'I', desc:'Francia vs. Senegal'},
+  {id:18, fecha:'2026-06-16', hora:'16:00', grupo:'I', desc:'Irak vs. Noruega'},
+  {id:19, fecha:'2026-06-16', hora:'19:00', grupo:'J', desc:'Argentina vs. Argelia'},
+  {id:20, fecha:'2026-06-16', hora:'22:00', grupo:'J', desc:'Austria vs. Jordania'},
+  {id:21, fecha:'2026-06-17', hora:'17:00', grupo:'L', desc:'Ghana vs. Panamá'},
+  {id:22, fecha:'2026-06-17', hora:'14:00', grupo:'L', desc:'Inglaterra vs. Croacia'},
+  {id:23, fecha:'2026-06-17', hora:'11:00', grupo:'K', desc:'Portugal vs. RD Congo'},
+  {id:24, fecha:'2026-06-17', hora:'20:00', grupo:'K', desc:'Uzbekistán vs. Colombia'},
+  // JORNADA 2
+  {id:25, fecha:'2026-06-18', hora:'10:00', grupo:'A', desc:'Chequia vs. Sudáfrica'},
+  {id:26, fecha:'2026-06-18', hora:'13:00', grupo:'B', desc:'Suiza vs. Bosnia & Herzegovina'},
+  {id:27, fecha:'2026-06-18', hora:'16:00', grupo:'B', desc:'Canadá vs. Qatar'},
+  {id:28, fecha:'2026-06-18', hora:'19:00', grupo:'A', desc:'México vs. Corea del Sur'},
+  {id:29, fecha:'2026-06-19', hora:'19:00', grupo:'C', desc:'Brasil vs. Haití'},
+  {id:30, fecha:'2026-06-19', hora:'16:00', grupo:'C', desc:'Escocia vs. Marruecos'},
+  {id:31, fecha:'2026-06-19', hora:'22:00', grupo:'D', desc:'Turquía vs. Paraguay'},
+  {id:32, fecha:'2026-06-19', hora:'13:00', grupo:'D', desc:'Estados Unidos vs. Australia'},
+  {id:33, fecha:'2026-06-20', hora:'14:00', grupo:'E', desc:'Alemania vs. Costa de Marfil'},
+  {id:34, fecha:'2026-06-20', hora:'18:00', grupo:'E', desc:'Ecuador vs. Curazao'},
+  {id:35, fecha:'2026-06-20', hora:'11:00', grupo:'F', desc:'Países Bajos vs. Suecia'},
+  {id:36, fecha:'2026-06-20', hora:'22:00', grupo:'F', desc:'Túnez vs. Japón'},
+  {id:37, fecha:'2026-06-21', hora:'16:00', grupo:'H', desc:'Uruguay vs. Cabo Verde'},
+  {id:38, fecha:'2026-06-21', hora:'10:00', grupo:'H', desc:'España vs. Arabia Saudita'},
+  {id:39, fecha:'2026-06-21', hora:'13:00', grupo:'G', desc:'Bélgica vs. Irán'},
+  {id:40, fecha:'2026-06-21', hora:'19:00', grupo:'G', desc:'Nueva Zelanda vs. Egipto'},
+  {id:41, fecha:'2026-06-22', hora:'18:00', grupo:'I', desc:'Noruega vs. Senegal'},
+  {id:42, fecha:'2026-06-22', hora:'15:00', grupo:'I', desc:'Francia vs. Irak'},
+  {id:43, fecha:'2026-06-22', hora:'11:00', grupo:'J', desc:'Argentina vs. Austria'},
+  {id:44, fecha:'2026-06-22', hora:'21:00', grupo:'J', desc:'Jordania vs. Argelia'},
+  {id:45, fecha:'2026-06-23', hora:'14:00', grupo:'L', desc:'Inglaterra vs. Ghana'},
+  {id:46, fecha:'2026-06-23', hora:'17:00', grupo:'L', desc:'Panamá vs. Croacia'},
+  {id:47, fecha:'2026-06-23', hora:'11:00', grupo:'K', desc:'Portugal vs. Uzbekistán'},
+  {id:48, fecha:'2026-06-23', hora:'20:00', grupo:'K', desc:'Colombia vs. RD Congo'},
+  // JORNADA 3 — BLOQUES SIMULTÁNEOS
+  {id:51, fecha:'2026-06-24', hora:'13:00', grupo:'B', desc:'Suiza vs. Canadá',               bloqueId:'B24'},
+  {id:52, fecha:'2026-06-24', hora:'13:00', grupo:'B', desc:'Bosnia & Herzegovina vs. Qatar',  bloqueId:'B24'},
+  {id:49, fecha:'2026-06-24', hora:'16:00', grupo:'C', desc:'Escocia vs. Brasil',              bloqueId:'C24'},
+  {id:50, fecha:'2026-06-24', hora:'16:00', grupo:'C', desc:'Marruecos vs. Haití',             bloqueId:'C24'},
+  {id:53, fecha:'2026-06-24', hora:'19:00', grupo:'A', desc:'Chequia vs. México',              bloqueId:'A24'},
+  {id:54, fecha:'2026-06-24', hora:'19:00', grupo:'A', desc:'Sudáfrica vs. Corea del Sur',     bloqueId:'A24'},
+  {id:55, fecha:'2026-06-25', hora:'14:00', grupo:'E', desc:'Curazao vs. Costa de Marfil',     bloqueId:'E25'},
+  {id:56, fecha:'2026-06-25', hora:'14:00', grupo:'E', desc:'Ecuador vs. Alemania',            bloqueId:'E25'},
+  {id:57, fecha:'2026-06-25', hora:'17:00', grupo:'F', desc:'Japón vs. Suecia',                bloqueId:'F25'},
+  {id:58, fecha:'2026-06-25', hora:'17:00', grupo:'F', desc:'Túnez vs. Países Bajos',          bloqueId:'F25'},
+  {id:59, fecha:'2026-06-25', hora:'20:00', grupo:'D', desc:'Turquía vs. Estados Unidos',      bloqueId:'D25'},
+  {id:60, fecha:'2026-06-25', hora:'20:00', grupo:'D', desc:'Paraguay vs. Australia',          bloqueId:'D25'},
+  {id:61, fecha:'2026-06-26', hora:'13:00', grupo:'I', desc:'Noruega vs. Francia',             bloqueId:'I26'},
+  {id:62, fecha:'2026-06-26', hora:'13:00', grupo:'I', desc:'Senegal vs. Irak',                bloqueId:'I26'},
+  {id:65, fecha:'2026-06-26', hora:'18:00', grupo:'H', desc:'Cabo Verde vs. Arabia Saudita',   bloqueId:'H26'},
+  {id:66, fecha:'2026-06-26', hora:'18:00', grupo:'H', desc:'Uruguay vs. España',              bloqueId:'H26'},
+  {id:63, fecha:'2026-06-26', hora:'21:00', grupo:'G', desc:'Egipto vs. Irán',                 bloqueId:'G26'},
+  {id:64, fecha:'2026-06-26', hora:'21:00', grupo:'G', desc:'Nueva Zelanda vs. Bélgica',       bloqueId:'G26'},
+  {id:67, fecha:'2026-06-27', hora:'15:00', grupo:'L', desc:'Panamá vs. Inglaterra',           bloqueId:'L27'},
+  {id:68, fecha:'2026-06-27', hora:'15:00', grupo:'L', desc:'Croacia vs. Ghana',               bloqueId:'L27'},
+  {id:71, fecha:'2026-06-27', hora:'17:30', grupo:'K', desc:'Colombia vs. Portugal',           bloqueId:'K27'},
+  {id:72, fecha:'2026-06-27', hora:'17:30', grupo:'K', desc:'RD Congo vs. Uzbekistán',         bloqueId:'K27'},
+  {id:69, fecha:'2026-06-27', hora:'20:00', grupo:'J', desc:'Argelia vs. Austria',             bloqueId:'J27'},
+  {id:70, fecha:'2026-06-27', hora:'20:00', grupo:'J', desc:'Jordania vs. Argentina',          bloqueId:'J27'},
+  // DIECISEISAVOS
+  {id:73, fecha:'2026-06-28', hora:'13:00', grupo:'16avos', desc:'2º Grupo A vs. 2º Grupo B'},
+  {id:76, fecha:'2026-06-29', hora:'11:00', grupo:'16avos', desc:'1º Grupo C vs. 2º Grupo F'},
+  {id:74, fecha:'2026-06-29', hora:'14:30', grupo:'16avos', desc:'1º Grupo E vs. Mejor 3º'},
+  {id:75, fecha:'2026-06-29', hora:'19:00', grupo:'16avos', desc:'1º Grupo F vs. 2º Grupo C'},
+  {id:78, fecha:'2026-06-30', hora:'11:00', grupo:'16avos', desc:'2º Grupo E vs. 2º Grupo I'},
+  {id:77, fecha:'2026-06-30', hora:'15:00', grupo:'16avos', desc:'1º Grupo I vs. Mejor 3º'},
+  {id:79, fecha:'2026-06-30', hora:'19:00', grupo:'16avos', desc:'1º Grupo A vs. Mejor 3º'},
+  {id:80, fecha:'2026-07-01', hora:'10:00', grupo:'16avos', desc:'1º Grupo L vs. Mejor 3º'},
+  {id:82, fecha:'2026-07-01', hora:'14:00', grupo:'16avos', desc:'1º Grupo G vs. Mejor 3º'},
+  {id:81, fecha:'2026-07-01', hora:'18:00', grupo:'16avos', desc:'1º Grupo D vs. Mejor 3º'},
+  {id:84, fecha:'2026-07-02', hora:'13:00', grupo:'16avos', desc:'1º Grupo H vs. 2º Grupo J'},
+  {id:83, fecha:'2026-07-02', hora:'17:00', grupo:'16avos', desc:'2º Grupo K vs. 2º Grupo L'},
+  {id:85, fecha:'2026-07-02', hora:'19:00', grupo:'16avos', desc:'1º Grupo B vs. Mejor 3º'},
+  {id:88, fecha:'2026-07-03', hora:'12:00', grupo:'16avos', desc:'2º Grupo D vs. 2º Grupo G'},
+  {id:86, fecha:'2026-07-03', hora:'16:00', grupo:'16avos', desc:'1º Grupo J vs. 2º Grupo H'},
+  {id:87, fecha:'2026-07-03', hora:'19:30', grupo:'16avos', desc:'1º Grupo K vs. Mejor 3º'},
+  // OCTAVOS
+  {id:89, fecha:'2026-07-04', hora:'15:00', grupo:'8vos', desc:'Ganador P74 vs. Ganador P77'},
+  {id:90, fecha:'2026-07-04', hora:'11:00', grupo:'8vos', desc:'Ganador P73 vs. Ganador P75'},
+  {id:91, fecha:'2026-07-05', hora:'14:00', grupo:'8vos', desc:'Ganador P76 vs. Ganador P78'},
+  {id:92, fecha:'2026-07-05', hora:'18:00', grupo:'8vos', desc:'Ganador P79 vs. Ganador P80'},
+  {id:93, fecha:'2026-07-06', hora:'13:00', grupo:'8vos', desc:'Ganador P83 vs. Ganador P84'},
+  {id:94, fecha:'2026-07-06', hora:'18:00', grupo:'8vos', desc:'Ganador P81 vs. Ganador P82'},
+  {id:95, fecha:'2026-07-07', hora:'10:00', grupo:'8vos', desc:'Ganador P86 vs. Ganador P88'},
+  {id:96, fecha:'2026-07-07', hora:'14:00', grupo:'8vos', desc:'Ganador P85 vs. Ganador P87'},
+  // CUARTOS
+  {id:97,  fecha:'2026-07-09', hora:'14:00', grupo:'4tos', desc:'Ganador P89 vs. Ganador P90'},
+  {id:98,  fecha:'2026-07-10', hora:'13:00', grupo:'4tos', desc:'Ganador P93 vs. Ganador P94'},
+  {id:99,  fecha:'2026-07-11', hora:'15:00', grupo:'4tos', desc:'Ganador P91 vs. Ganador P92'},
+  {id:100, fecha:'2026-07-11', hora:'19:00', grupo:'4tos', desc:'Ganador P95 vs. Ganador P96'},
+  // SEMIFINALES
+  {id:101, fecha:'2026-07-14', hora:'13:00', grupo:'Semi', desc:'Semifinal 1'},
+  {id:102, fecha:'2026-07-15', hora:'13:00', grupo:'Semi', desc:'Semifinal 2'},
+  // TERCER LUGAR
+  {id:103, fecha:'2026-07-18', hora:'15:00', grupo:'3er Lugar', desc:'Partido por el Tercer Lugar'},
+  // FINAL
+  {id:104, fecha:'2026-07-19', hora:'13:00', grupo:'Final', desc:'🏆 Gran Final — Copa Mundial 2026'},
+];
+
+// ── ESTADO ────────────────────────────────────────────────────────────────
+let seleccionado = null;
+let fechaActiva  = null;
+
+// ── TIEMPO EN MÉXICO CDMx ─────────────────────────────────────────────────
+function ahoraEnMexico() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  return new Date(utc - 6 * 3600000);
+}
+
+function fechaPartido(p) {
+  const [y,m,d] = p.fecha.split('-').map(Number);
+  const [h,min] = p.hora.split(':').map(Number);
+  return new Date(y, m-1, d, h, min);
+}
+
+function esBloqueado(p) {
+  return fechaPartido(p) <= ahoraEnMexico();
+}
+
+function todayStr() {
+  const a = ahoraEnMexico();
+  return `${a.getFullYear()}-${String(a.getMonth()+1).padStart(2,'0')}-${String(a.getDate()).padStart(2,'0')}`;
+}
+
+function formatFecha(f) {
+  const [y,m,d] = f.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'});
+}
+
+function getFechasDisponibles() {
+  const hoy = todayStr();
+  return [...new Set(PARTIDOS.map(p=>p.fecha))].sort().filter(f => f >= hoy);
+}
+
+// ── BLOQUES ───────────────────────────────────────────────────────────────
+function getItemsDia(partidosDia) {
+  const bloqueMap = {};
+  const result = [];
+  const vistos = new Set();
+
+  for (const p of partidosDia) {
+    if (!p.bloqueId) {
+      result.push(p);
+    } else {
+      if (!bloqueMap[p.bloqueId]) bloqueMap[p.bloqueId] = [];
+      bloqueMap[p.bloqueId].push(p);
+    }
+  }
+
+  for (const p of partidosDia) {
+    if (p.bloqueId && !vistos.has(p.bloqueId)) {
+      vistos.add(p.bloqueId);
+      result.push({
+        ...p,
+        _esBloque: true,
+        _bloquePartidos: bloqueMap[p.bloqueId]
+      });
+    }
+  }
+
+  return result.sort((a,b) => a.hora.localeCompare(b.hora));
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function renderNavFechas() {
+  const fechas = getFechasDisponibles();
+  const nav = document.getElementById('nav-fechas');
+  nav.innerHTML = '';
+  if (!fechas.length) return;
+  if (!fechaActiva || !fechas.includes(fechaActiva)) fechaActiva = fechas[0];
+
+  fechas.forEach(f => {
+    const btn = document.createElement('div');
+    btn.className = 'nav-dia tiene-partidos' + (f === fechaActiva ? ' activo' : '');
+    btn.textContent = formatFecha(f);
+    btn.onclick = () => { fechaActiva = f; renderTodo(); };
+    nav.appendChild(btn);
+  });
+}
+
+function renderPartidos() {
+  const lista = document.getElementById('lista-partidos');
+  lista.innerHTML = '';
+
+  if (!fechaActiva) {
+    lista.innerHTML = '<div class="no-partidos"><div class="icon">🏆</div><h3>El Mundial ha terminado</h3><p>Gracias por vivir el Mundial 2026 con Vapiano.</p></div>';
+    return;
+  }
+
+  const partidosDia = PARTIDOS.filter(p => p.fecha === fechaActiva);
+  if (!partidosDia.length) {
+    lista.innerHTML = '<div class="no-partidos"><div class="icon">📅</div><h3>Sin partidos hoy</h3><p>No hay encuentros programados este día.</p></div>';
+    return;
+  }
+
+  const hdr = document.createElement('div');
+  hdr.className = 'fecha-header';
+  hdr.textContent = formatFecha(fechaActiva).toUpperCase();
+  lista.appendChild(hdr);
+
+  const items = getItemsDia(partidosDia);
+  let hayDisponibles = false;
+
+  items.forEach(item => {
+    const bloqueado = esBloqueado(item);
+    if (!bloqueado) hayDisponibles = true;
+    item._esBloque ? renderBloqueCard(lista, item, bloqueado) : renderIndividualCard(lista, item, bloqueado);
+  });
+
+  if (!hayDisponibles) {
+    const msg = document.createElement('div');
+    msg.className = 'empty-day';
+    msg.textContent = 'Todos los partidos de hoy ya comenzaron.';
+    lista.appendChild(msg);
+  }
+}
+
+function renderIndividualCard(container, p, bloqueado) {
+  const esSel = seleccionado?.tipo === 'individual' && seleccionado.partido.id === p.id;
+  const div = document.createElement('div');
+  div.className = 'partido-card' + (bloqueado?' bloqueado':'') + (esSel?' seleccionado':'');
+  div.innerHTML = `
+    <div class="hora">${p.hora}</div>
+    <div class="vs-info">
+      <div class="equipos">${p.desc}</div>
+      <div class="grupo-tag">Grupo ${p.grupo}</div>
+    </div>
+    ${bloqueado
+      ? '<span class="badge-bloqueado">Iniciado</span>'
+      : '<div class="selector-dot"></div>'}
+  `;
+  if (!bloqueado) div.onclick = () => {
+    seleccionado = {tipo:'individual', partido:p, label:p.desc, hora:p.hora};
+    renderTodo();
+  };
+  container.appendChild(div);
+}
+
+function renderBloqueCard(container, item, bloqueado) {
+  const bp = item._bloquePartidos;
+  const esSel = seleccionado?.tipo === 'bloque' && seleccionado.bloqueId === item.bloqueId;
+  const div = document.createElement('div');
+  div.className = 'partido-card bloque-card' + (bloqueado?' bloqueado':'') + (esSel?' seleccionado':'');
+  div.innerHTML = `
+    <div class="hora">${item.hora}</div>
+    <div class="vs-info">
+      <div class="bloque-partidos">
+        ${bp.map((b,i) => `
+          ${i > 0 ? '<div class="bloque-sep">— simultáneo —</div>' : ''}
+          <div class="vs-line">${b.desc}</div>
+        `).join('')}
+      </div>
+      <span class="badge-bloque">⚡ Grupo ${item.grupo} · El partido con más goles cuenta</span>
+    </div>
+    ${bloqueado
+      ? '<span class="badge-bloqueado">Iniciado</span>'
+      : '<div class="selector-dot"></div>'}
+  `;
+  if (!bloqueado) div.onclick = () => {
+    seleccionado = {tipo:'bloque', bloqueId:item.bloqueId, partido:item, label:`Bloque Grupo ${item.grupo}`, hora:item.hora, partidos:bp};
+    renderTodo();
+  };
+  container.appendChild(div);
+}
+
+function renderStickyFooter() {
+  const footer = document.getElementById('sticky-footer');
+  if (seleccionado) {
+    footer.classList.add('visible');
+    document.getElementById('footer-partido').textContent = seleccionado.label;
+    document.getElementById('footer-hora').textContent = `Hoy · ${seleccionado.hora} hrs`;
+  } else {
+    footer.classList.remove('visible');
+  }
+}
+
+function renderTodo() {
+  renderNavFechas();
+  renderPartidos();
+  renderStickyFooter();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+function abrirModal() {
+  if (!seleccionado) return;
+  const contenido = document.getElementById('modal-contenido');
+  contenido.innerHTML = `
+    <h2>Registrar VAPIs</h2>
+    <div class="partido-confirmado">⚽ ${seleccionado.label} · ${seleccionado.hora} hrs</div>
+    <div class="form-group">
+      <label>WhatsApp</label>
+      <input type="tel" id="input-whatsapp" placeholder="55 1234 5678" inputmode="numeric" maxlength="15">
+    </div>
+    <div class="form-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="input-email" placeholder="tu@correo.com" inputmode="email">
+    </div>
+    <button class="btn-confirmar" onclick="confirmarRegistro()">Confirmar registro →</button>
+    <p class="modal-nota">Recibirás tu cupón por WhatsApp al terminar el partido.<br>1 cupón por número · Consumo mínimo $400 · Descuento máximo $300</p>
+  `;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function cerrarModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function cerrarModalSiOverlay(e) {
+  if (e.target === document.getElementById('modal-overlay')) cerrarModal();
+}
+
+async function confirmarRegistro() {
+  const wa    = document.getElementById('input-whatsapp').value.trim();
+  const email = document.getElementById('input-email').value.trim();
+  if (!wa || wa.replace(/\D/g,'').length < 10) { alert('Ingresa un WhatsApp válido (10 dígitos).'); return; }
+  if (!email || !email.includes('@')) { alert('Ingresa un correo electrónico válido.'); return; }
+
+  // Deshabilitar botón mientras guarda
+  const btn = document.querySelector('.btn-confirmar');
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
+
+  try {
+    const res = await fetch('/.netlify/functions/registrar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wa, email, partido: seleccionado, sucursal: sucursalKey }),
+    });
+    if (!res.ok) throw new Error('Error del servidor');
+  } catch (err) {
+    console.error(err);
+    // Si falla el backend igual mostramos confirmación al usuario
+    // (no queremos que pierda la experiencia por un error de red)
+  }
+
+  document.getElementById('modal-contenido').innerHTML = `
+    <div class="confirmacion">
+      <div class="check-circle">✓</div>
+      <h2>¡Registrado!</h2>
+      <p>Tu cupón VAPIs para <strong>${seleccionado.label}</strong> llegará por WhatsApp al terminar el partido.</p>
+      <div class="vapis-preview">
+        <div class="pre-label">Puedes ganar hasta</div>
+        <div class="rango">$100 · $200 · $300 Vapipesos</div>
+      </div>
+      <p style="font-size:13px;color:var(--gris)">Válido 5 días · Mínimo $400 · Sucursal ${sucursalNombre}</p>
+    </div>
+  `;
+  seleccionado = null;
+  renderStickyFooter();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+renderTodo();
+setInterval(renderTodo, 60000);
+</script>
+</body>
+</html>
