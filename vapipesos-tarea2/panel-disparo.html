@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Operador — Vapipesos</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rojo:  #d8213b;
+    --negro: #0d0d0d;
+    --card:  #141414;
+    --card2: #1e1e1e;
+    --crema: #faf7f2;
+    --gris:  #888;
+    --verde: #00a86b;
+    --oro:   #f5c518;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--negro);
+    color: var(--crema);
+    min-height: 100vh;
+  }
+
+  /* ── PASSWORD OVERLAY ─────────────────────────────────────────────── */
+  #overlay {
+    position: fixed; inset: 0;
+    background: var(--negro);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999;
+  }
+
+  .pass-card {
+    background: var(--card);
+    border: 1px solid #2a2a2a;
+    border-radius: 18px;
+    padding: 44px 36px;
+    width: 100%; max-width: 360px;
+    text-align: center;
+  }
+
+  .pass-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 34px; letter-spacing: 4px;
+    color: var(--rojo); margin-bottom: 2px;
+  }
+
+  .pass-sub { font-size: 13px; color: var(--gris); margin-bottom: 28px; }
+
+  /* ── INPUTS ───────────────────────────────────────────────────────── */
+  input[type="password"],
+  input[type="number"] {
+    width: 100%;
+    background: var(--card2);
+    border: 1.5px solid #2e2e2e;
+    border-radius: 10px;
+    color: var(--crema);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input:focus { border-color: var(--rojo); }
+  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  /* ── BUTTONS ──────────────────────────────────────────────────────── */
+  .btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; padding: 13px 24px;
+    border-radius: 10px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: opacity .2s, transform .1s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+  .btn-primary   { background: var(--rojo);  color: #fff; }
+  .btn-secondary { background: transparent; color: var(--rojo); border: 1.5px solid var(--rojo); }
+  .btn-success   { background: var(--verde); color: #fff; }
+
+  /* ── MAIN PANEL ───────────────────────────────────────────────────── */
+  #panel { display: none; }
+
+  .panel-header {
+    background: var(--card);
+    border-bottom: 1px solid #222;
+    padding: 15px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .panel-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--rojo); letter-spacing: 2px; }
+  .panel-sub  { font-size: 12px; color: var(--gris); margin-top: 1px; }
+
+  .btn-logout {
+    background: none; border: 1px solid #333; border-radius: 8px;
+    color: var(--gris); font-size: 12px; padding: 6px 14px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-logout:hover { border-color: var(--rojo); color: var(--rojo); }
+
+  .panel-body {
+    max-width: 800px; margin: 0 auto;
+    padding: 24px 20px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  /* ── CARDS ────────────────────────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid #222;
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .card-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--gris); margin-bottom: 14px;
+  }
+
+  /* ── PARTIDO INFO ─────────────────────────────────────────────────── */
+  .partido-info {
+    background: var(--card2); border-radius: 10px; padding: 14px 16px;
+    margin-top: 12px;
+  }
+
+  .partido-nombre {
+    font-family: 'Bebas Neue', sans-serif; font-size: 20px;
+    color: var(--crema); letter-spacing: .8px;
+  }
+
+  .partido-meta { font-size: 13px; color: var(--gris); margin-top: 3px; }
+
+  .bloque-matches { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .bloque-match   { font-size: 14px; color: var(--crema); }
+
+  .badge {
+    display: inline-block; border-radius: 6px;
+    padding: 2px 9px; font-size: 11px; font-weight: 600; letter-spacing: .8px;
+    margin-top: 8px;
+  }
+  .badge-bloque { background: rgba(216,33,59,.15); color: var(--rojo); border: 1px solid rgba(216,33,59,.3); }
+
+  /* ── GOLES ────────────────────────────────────────────────────────── */
+  .goles-row { display: flex; flex-direction: column; gap: 10px; }
+
+  .goles-item {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .goles-text { flex: 1; font-size: 14px; color: var(--crema); line-height: 1.3; }
+
+  .goles-num {
+    width: 76px !important; text-align: center;
+    font-size: 22px !important; font-weight: 600;
+    padding: 8px 10px !important;
+  }
+
+  .goles-hint { font-size: 12px; color: var(--gris); margin-top: 8px; }
+
+  .monto-box {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(245,197,24,.07);
+    border: 1px solid rgba(245,197,24,.22);
+    border-radius: 10px; padding: 13px 16px; margin-top: 12px;
+  }
+  .monto-lbl { font-size: 13px; color: var(--gris); }
+  .monto-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 30px;
+    color: var(--oro); letter-spacing: 1px;
+  }
+
+  /* ── TABLE ────────────────────────────────────────────────────────── */
+  .table-scroll { overflow-x: auto; margin-top: 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  th {
+    text-align: left; padding: 8px 12px;
+    color: var(--gris); font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  td { padding: 10px 12px; border-bottom: 1px solid #1e1e1e; color: var(--crema); }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #1a1a1a; }
+
+  .num-badge {
+    background: var(--rojo); color: #fff;
+    border-radius: 20px; padding: 2px 10px;
+    font-size: 12px; font-weight: 600; margin-left: 8px;
+  }
+
+  /* ── SUCCESS ──────────────────────────────────────────────────────── */
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+    color: var(--verde); letter-spacing: 1px; margin-bottom: 16px;
+  }
+
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-box { background: var(--card2); border-radius: 10px; padding: 14px; text-align: center; }
+  .stat-n   { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--crema); }
+  .stat-n.verde { color: var(--verde); }
+  .stat-n.oro   { color: var(--oro); }
+  .stat-l { font-size: 10px; color: var(--gris); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px; }
+
+  /* ── ERROR ────────────────────────────────────────────────────────── */
+  .err {
+    background: rgba(216,33,59,.1); border: 1px solid rgba(216,33,59,.3);
+    color: #ff8090; border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; margin-top: 10px;
+  }
+
+  .empty { text-align: center; padding: 24px; color: var(--gris); font-size: 14px; }
+
+  /* ── UTILS ────────────────────────────────────────────────────────── */
+  .hidden { display: none !important; }
+  .mt-12  { margin-top: 12px; }
+  .mt-16  { margin-top: 16px; }
+
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stat-n     { font-size: 28px; }
+    .pass-card  { padding: 36px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── PASSWORD OVERLAY ──────────────────────────────────────────────────── -->
+<div id="overlay">
+  <div class="pass-card">
+    <div class="pass-logo">VAPIPESOS</div>
+    <div class="pass-sub">Panel de Operador · Uso interno</div>
+    <input type="password" id="inp-pass" placeholder="Contraseña" autocomplete="current-password">
+    <div id="pass-err" class="err hidden">Contraseña incorrecta</div>
+    <button class="btn btn-primary mt-16" id="btn-ingresar">Ingresar</button>
+  </div>
+</div>
+
+<!-- ── MAIN PANEL ─────────────────────────────────────────────────────────── -->
+<div id="panel">
+
+  <div class="panel-header">
+    <div>
+      <div class="panel-logo">VAPIPESOS</div>
+      <div class="panel-sub">Panel de disparo de cupones · Uso interno</div>
+    </div>
+    <button class="btn-logout" id="btn-logout">Salir</button>
+  </div>
+
+  <div class="panel-body">
+
+    <!-- PASO 1: Partido -->
+    <div class="card" id="card-partido">
+      <div class="card-label">Paso 1 — Partido</div>
+      <input type="number" id="inp-id" min="1" max="104"
+        placeholder="ID del partido (1 – 104)  ej: 28">
+      <div id="partido-info" class="hidden"></div>
+      <div id="partido-err" class="err hidden"></div>
+    </div>
+
+    <!-- PASO 2: Goles -->
+    <div class="card hidden" id="card-goles">
+      <div class="card-label">Paso 2 — Goles del partido</div>
+      <div id="goles-form"></div>
+      <div id="monto-box" class="monto-box hidden">
+        <span class="monto-lbl">Cupón por persona</span>
+        <span class="monto-num" id="monto-num">—</span>
+      </div>
+      <div id="goles-err" class="err hidden"></div>
+    </div>
+
+    <!-- PASO 3: Buscar -->
+    <div class="hidden" id="wrap-buscar">
+      <button class="btn btn-secondary" id="btn-buscar">Buscar registrados</button>
+    </div>
+
+    <!-- PASO 4: Resultados -->
+    <div class="card hidden" id="card-resultados">
+      <div class="card-label">
+        Personas registradas
+        <span class="num-badge" id="cnt-badge">0</span>
+      </div>
+      <div id="tabla-wrap"></div>
+      <div id="sin-reg" class="empty hidden">Sin registros para este partido</div>
+      <button class="btn btn-primary mt-16 hidden" id="btn-disparar">Disparar cupones</button>
+    </div>
+
+    <!-- PASO 5: Confirmación -->
+    <div class="card hidden" id="card-ok">
+      <div class="success-title">✓ Cupones disparados</div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <button class="btn btn-secondary" id="btn-nuevo">Nueva búsqueda</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+const PANEL_KEY = 'vapiano2026';
+
+const PARTIDOS = [
+  {id:1,  fecha:'2026-06-11', hora:'13:00', grupo:'A', desc:'México vs. Sudáfrica'},
+  {id:2,  fecha:'2026-06-11', hora:'20:00', grupo:'A', desc:'Corea del Sur vs. Chequia'},
+  {id:3,  fecha:'2026-06-12', hora:'13:00', grupo:'B', desc:'Canadá vs. Bosnia & Herzegovina'},
+  {id:4,  fecha:'2026-06-12', hora:'19:00', grupo:'D', desc:'Estados Unidos vs. Paraguay'},
+  {id:5,  fecha:'2026-06-13', hora:'19:00', grupo:'C', desc:'Haití vs. Escocia'},
+  {id:6,  fecha:'2026-06-13', hora:'22:00', grupo:'D', desc:'Australia vs. Turquía'},
+  {id:7,  fecha:'2026-06-13', hora:'16:00', grupo:'C', desc:'Brasil vs. Marruecos'},
+  {id:8,  fecha:'2026-06-13', hora:'13:00', grupo:'B', desc:'Qatar vs. Suiza'},
+  {id:9,  fecha:'2026-06-14', hora:'17:00', grupo:'E', desc:'Costa de Marfil vs. Ecuador'},
+  {id:10, fecha:'2026-06-14', hora:'11:00', grupo:'E', desc:'Alemania vs. Curazao'},
+  {id:11, fecha:'2026-06-14', hora:'14:00', grupo:'F', desc:'Países Bajos vs. Japón'},
+  {id:12, fecha:'2026-06-14', hora:'20:00', grupo:'F', desc:'Suecia vs. Túnez'},
+  {id:13, fecha:'2026-06-15', hora:'16:00', grupo:'H', desc:'Arabia Saudita vs. Uruguay'},
+  {id:14, fecha:'2026-06-15', hora:'10:00', grupo:'H', desc:'España vs. Cabo Verde'},
+  {id:15, fecha:'2026-06-15', hora:'19:00', grupo:'G', desc:'Irán vs. Nueva Zelanda'},
+  {id:16, fecha:'2026-06-15', hora:'13:00', grupo:'G', desc:'Bélgica vs. Egipto'},
+  {id:17, fecha:'2026-06-16', hora:'13:00', grupo:'I', desc:'Francia vs. Senegal'},
+  {id:18, fecha:'2026-06-16', hora:'16:00', grupo:'I', desc:'Irak vs. Noruega'},
+  {id:19, fecha:'2026-06-16', hora:'19:00', grupo:'J', desc:'Argentina vs. Argelia'},
+  {id:20, fecha:'2026-06-16', hora:'22:00', grupo:'J', desc:'Austria vs. Jordania'},
+  {id:21, fecha:'2026-06-17', hora:'17:00', grupo:'L', desc:'Ghana vs. Panamá'},
+  {id:22, fecha:'2026-06-17', hora:'14:00', grupo:'L', desc:'Inglaterra vs. Croacia'},
+  {id:23, fecha:'2026-06-17', hora:'11:00', grupo:'K', desc:'Portugal vs. RD Congo'},
+  {id:24, fecha:'2026-06-17', hora:'20:00', grupo:'K', desc:'Uzbekistán vs. Colombia'},
+  {id:25, fecha:'2026-06-18', hora:'10:00', grupo:'A', desc:'Chequia vs. Sudáfrica'},
+  {id:26, fecha:'2026-06-18', hora:'13:00', grupo:'B', desc:'Suiza vs. Bosnia & Herzegovina'},
+  {id:27, fecha:'2026-06-18', hora:'16:00', grupo:'B', desc:'Canadá vs. Qatar'},
+  {id:28, fecha:'2026-06-18', hora:'19:00', grupo:'A', desc:'México vs. Corea del Sur'},
+  {id:29, fecha:'2026-06-19', hora:'19:00', grupo:'C', desc:'Brasil vs. Haití'},
+  {id:30, fecha:'2026-06-19', hora:'16:00', grupo:'C', desc:'Escocia vs. Marruecos'},
+  {id:31, fecha:'2026-06-19', hora:'22:00', grupo:'D', desc:'Turquía vs. Paraguay'},
+  {id:32, fecha:'2026-06-19', hora:'13:00', grupo:'D', desc:'Estados Unidos vs. Australia'},
+  {id:33, fecha:'2026-06-20', hora:'14:00', grupo:'E', desc:'Alemania vs. Costa de Marfil'},
+  {id:34, fecha:'2026-06-20', hora:'18:00', grupo:'E', desc:'Ecuador vs. Curazao'},
+  {id:35, fecha:'2026-06-20', hora:'11:00', grupo:'F', desc:'Países Bajos vs. Suecia'},
+  {id:36, fecha:'2026-06-20', hora:'22:00', grupo:'F', desc:'Túnez vs. Japón'},
+  {id:37, fecha:'2026-06-21', hora:'16:00', grupo:'H', desc:'Uruguay vs. Cabo Verde'},
+  {id:38, fecha:'2026-06-21', hora:'10:00', grupo:'H', desc:'España vs. Arabia Saudita'},
+  {id:39, fecha:'2026-06-21', hora:'13:00', grupo:'G', desc:'Bélgica vs. Irán'},
+  {id:40, fecha:'2026-06-21', hora:'19:00', grupo:'G', desc:'Nueva Zelanda vs. Egipto'},
+  {id:41, fecha:'2026-06-22', hora:'18:00', grupo:'I', desc:'Noruega vs. Senegal'},
+  {id:42, fecha:'2026-06-22', hora:'15:00', grupo:'I', desc:'Francia vs. Irak'},
+  {id:43, fecha:'2026-06-22', hora:'11:00', grupo:'J', desc:'Argentina vs. Austria'},
+  {id:44, fecha:'2026-06-22', hora:'21:00', grupo:'J', desc:'Jordania vs. Argelia'},
+  {id:45, fecha:'2026-06-23', hora:'14:00', grupo:'L', desc:'Inglaterra vs. Ghana'},
+  {id:46, fecha:'2026-06-23', hora:'17:00', grupo:'L', desc:'Panamá vs. Croacia'},
+  {id:47, fecha:'2026-06-23', hora:'11:00', grupo:'K', desc:'Portugal vs. Uzbekistán'},
+  {id:48, fecha:'2026-06-23', hora:'20:00', grupo:'K', desc:'Colombia vs. RD Congo'},
+  {id:51, fecha:'2026-06-24', hora:'13:00', grupo:'B', desc:'Suiza vs. Canadá',               bloqueId:'B24'},
+  {id:52, fecha:'2026-06-24', hora:'13:00', grupo:'B', desc:'Bosnia & Herzegovina vs. Qatar',  bloqueId:'B24'},
+  {id:49, fecha:'2026-06-24', hora:'16:00', grupo:'C', desc:'Escocia vs. Brasil',              bloqueId:'C24'},
+  {id:50, fecha:'2026-06-24', hora:'16:00', grupo:'C', desc:'Marruecos vs. Haití',             bloqueId:'C24'},
+  {id:53, fecha:'2026-06-24', hora:'19:00', grupo:'A', desc:'Chequia vs. México',              bloqueId:'A24'},
+  {id:54, fecha:'2026-06-24', hora:'19:00', grupo:'A', desc:'Sudáfrica vs. Corea del Sur',     bloqueId:'A24'},
+  {id:55, fecha:'2026-06-25', hora:'14:00', grupo:'E', desc:'Curazao vs. Costa de Marfil',     bloqueId:'E25'},
+  {id:56, fecha:'2026-06-25', hora:'14:00', grupo:'E', desc:'Ecuador vs. Alemania',            bloqueId:'E25'},
+  {id:57, fecha:'2026-06-25', hora:'17:00', grupo:'F', desc:'Japón vs. Suecia',                bloqueId:'F25'},
+  {id:58, fecha:'2026-06-25', hora:'17:00', grupo:'F', desc:'Túnez vs. Países Bajos',          bloqueId:'F25'},
+  {id:59, fecha:'2026-06-25', hora:'20:00', grupo:'D', desc:'Turquía vs. Estados Unidos',      bloqueId:'D25'},
+  {id:60, fecha:'2026-06-25', hora:'20:00', grupo:'D', desc:'Paraguay vs. Australia',          bloqueId:'D25'},
+  {id:61, fecha:'2026-06-26', hora:'13:00', grupo:'I', desc:'Noruega vs. Francia',             bloqueId:'I26'},
+  {id:62, fecha:'2026-06-26', hora:'13:00', grupo:'I', desc:'Senegal vs. Irak',                bloqueId:'I26'},
+  {id:65, fecha:'2026-06-26', hora:'18:00', grupo:'H', desc:'Cabo Verde vs. Arabia Saudita',   bloqueId:'H26'},
+  {id:66, fecha:'2026-06-26', hora:'18:00', grupo:'H', desc:'Uruguay vs. España',              bloqueId:'H26'},
+  {id:63, fecha:'2026-06-26', hora:'21:00', grupo:'G', desc:'Egipto vs. Irán',                 bloqueId:'G26'},
+  {id:64, fecha:'2026-06-26', hora:'21:00', grupo:'G', desc:'Nueva Zelanda vs. Bélgica',       bloqueId:'G26'},
+  {id:67, fecha:'2026-06-27', hora:'15:00', grupo:'L', desc:'Panamá vs. Inglaterra',           bloqueId:'L27'},
+  {id:68, fecha:'2026-06-27', hora:'15:00', grupo:'L', desc:'Croacia vs. Ghana',               bloqueId:'L27'},
+  {id:71, fecha:'2026-06-27', hora:'17:30', grupo:'K', desc:'Colombia vs. Portugal',           bloqueId:'K27'},
+  {id:72, fecha:'2026-06-27', hora:'17:30', grupo:'K', desc:'RD Congo vs. Uzbekistán',         bloqueId:'K27'},
+  {id:69, fecha:'2026-06-27', hora:'20:00', grupo:'J', desc:'Argelia vs. Austria',             bloqueId:'J27'},
+  {id:70, fecha:'2026-06-27', hora:'20:00', grupo:'J', desc:'Jordania vs. Argentina',          bloqueId:'J27'},
+  {id:73, fecha:'2026-06-28', hora:'13:00', grupo:'16avos', desc:'2º Grupo A vs. 2º Grupo B'},
+  {id:76, fecha:'2026-06-29', hora:'11:00', grupo:'16avos', desc:'1º Grupo C vs. 2º Grupo F'},
+  {id:74, fecha:'2026-06-29', hora:'14:30', grupo:'16avos', desc:'1º Grupo E vs. Mejor 3º'},
+  {id:75, fecha:'2026-06-29', hora:'19:00', grupo:'16avos', desc:'1º Grupo F vs. 2º Grupo C'},
+  {id:78, fecha:'2026-06-30', hora:'11:00', grupo:'16avos', desc:'2º Grupo E vs. 2º Grupo I'},
+  {id:77, fecha:'2026-06-30', hora:'15:00', grupo:'16avos', desc:'1º Grupo I vs. Mejor 3º'},
+  {id:79, fecha:'2026-06-30', hora:'19:00', grupo:'16avos', desc:'1º Grupo A vs. Mejor 3º'},
+  {id:80, fecha:'2026-07-01', hora:'10:00', grupo:'16avos', desc:'1º Grupo L vs. Mejor 3º'},
+  {id:82, fecha:'2026-07-01', hora:'14:00', grupo:'16avos', desc:'1º Grupo G vs. Mejor 3º'},
+  {id:81, fecha:'2026-07-01', hora:'18:00', grupo:'16avos', desc:'1º Grupo D vs. Mejor 3º'},
+  {id:84, fecha:'2026-07-02', hora:'13:00', grupo:'16avos', desc:'1º Grupo H vs. 2º Grupo J'},
+  {id:83, fecha:'2026-07-02', hora:'17:00', grupo:'16avos', desc:'2º Grupo K vs. 2º Grupo L'},
+  {id:85, fecha:'2026-07-02', hora:'19:00', grupo:'16avos', desc:'1º Grupo B vs. Mejor 3º'},
+  {id:88, fecha:'2026-07-03', hora:'12:00', grupo:'16avos', desc:'2º Grupo D vs. 2º Grupo G'},
+  {id:86, fecha:'2026-07-03', hora:'16:00', grupo:'16avos', desc:'1º Grupo J vs. 2º Grupo H'},
+  {id:87, fecha:'2026-07-03', hora:'19:30', grupo:'16avos', desc:'1º Grupo K vs. Mejor 3º'},
+  {id:89, fecha:'2026-07-04', hora:'15:00', grupo:'8vos', desc:'Ganador P74 vs. Ganador P77'},
+  {id:90, fecha:'2026-07-04', hora:'11:00', grupo:'8vos', desc:'Ganador P73 vs. Ganador P75'},
+  {id:91, fecha:'2026-07-05', hora:'14:00', grupo:'8vos', desc:'Ganador P76 vs. Ganador P78'},
+  {id:92, fecha:'2026-07-05', hora:'18:00', grupo:'8vos', desc:'Ganador P79 vs. Ganador P80'},
+  {id:93, fecha:'2026-07-06', hora:'13:00', grupo:'8vos', desc:'Ganador P83 vs. Ganador P84'},
+  {id:94, fecha:'2026-07-06', hora:'18:00', grupo:'8vos', desc:'Ganador P81 vs. Ganador P82'},
+  {id:95, fecha:'2026-07-07', hora:'10:00', grupo:'8vos', desc:'Ganador P86 vs. Ganador P88'},
+  {id:96, fecha:'2026-07-07', hora:'14:00', grupo:'8vos', desc:'Ganador P85 vs. Ganador P87'},
+  {id:97,  fecha:'2026-07-09', hora:'14:00', grupo:'4tos', desc:'Ganador P89 vs. Ganador P90'},
+  {id:98,  fecha:'2026-07-10', hora:'13:00', grupo:'4tos', desc:'Ganador P93 vs. Ganador P94'},
+  {id:99,  fecha:'2026-07-11', hora:'15:00', grupo:'4tos', desc:'Ganador P91 vs. Ganador P92'},
+  {id:100, fecha:'2026-07-11', hora:'19:00', grupo:'4tos', desc:'Ganador P95 vs. Ganador P96'},
+  {id:101, fecha:'2026-07-14', hora:'13:00', grupo:'Semi', desc:'Semifinal 1'},
+  {id:102, fecha:'2026-07-15', hora:'13:00', grupo:'Semi', desc:'Semifinal 2'},
+  {id:103, fecha:'2026-07-18', hora:'15:00', grupo:'3er Lugar', desc:'Partido por el Tercer Lugar'},
+  {id:104, fecha:'2026-07-19', hora:'13:00', grupo:'Final', desc:'Gran Final — Copa Mundial 2026'},
+];
+
+// ── ESTADO ────────────────────────────────────────────────────────────────
+let currentPartido  = null;
+let currentBloque   = null;   // array[2] si es bloque simultáneo
+let currentGoles    = 0;
+let currentRegistros = [];
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+const overlay    = document.getElementById('overlay');
+const inpPass    = document.getElementById('inp-pass');
+const btnIngr    = document.getElementById('btn-ingresar');
+const passErr    = document.getElementById('pass-err');
+
+function autenticar() {
+  if (inpPass.value === PANEL_KEY) {
+    overlay.style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    sessionStorage.setItem('vp_auth', '1');
+  } else {
+    passErr.classList.remove('hidden');
+    inpPass.value = '';
+    inpPass.focus();
+  }
+}
+
+btnIngr.addEventListener('click', autenticar);
+inpPass.addEventListener('keydown', e => { if (e.key === 'Enter') autenticar(); });
+document.getElementById('btn-logout').addEventListener('click', () => {
+  sessionStorage.removeItem('vp_auth');
+  location.reload();
+});
+
+if (sessionStorage.getItem('vp_auth') === '1') {
+  overlay.style.display = 'none';
+  document.getElementById('panel').style.display = 'block';
+}
+
+// ── PASO 1: PARTIDO ───────────────────────────────────────────────────────
+const inpId = document.getElementById('inp-id');
+inpId.addEventListener('input', onPartidoChange);
+
+function onPartidoChange() {
+  const id = parseInt(inpId.value, 10);
+
+  // Resetear pasos siguientes
+  hide('card-goles'); hide('wrap-buscar'); hide('card-resultados'); hide('card-ok');
+  currentPartido = null; currentBloque = null; currentGoles = 0; currentRegistros = [];
+
+  const infoEl = document.getElementById('partido-info');
+  const errEl  = document.getElementById('partido-err');
+  infoEl.classList.add('hidden');
+  errEl.classList.add('hidden');
+
+  if (!id || id < 1 || id > 104) return;
+
+  const p = PARTIDOS.find(x => x.id === id);
+  if (!p) {
+    errEl.textContent = `No existe partido con ID ${id}`;
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  currentPartido = p;
+
+  if (p.bloqueId) {
+    currentBloque = PARTIDOS.filter(x => x.bloqueId === p.bloqueId);
+    renderBloqueInfo(infoEl, currentBloque);
+  } else {
+    currentBloque = null;
+    renderPartidoInfo(infoEl, p);
+  }
+
+  infoEl.classList.remove('hidden');
+  renderGolesForm();
+  show('card-goles');
+}
+
+function renderPartidoInfo(el, p) {
+  const fecha = new Date(p.fecha + 'T12:00').toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' });
+  el.innerHTML = `
+    <div class="partido-info">
+      <div class="partido-nombre">P${p.id} — ${p.desc}</div>
+      <div class="partido-meta">${capitalizar(fecha)} · ${p.hora} hrs · Grupo ${p.grupo}</div>
+    </div>`;
+}
+
+function renderBloqueInfo(el, bloque) {
+  const p     = bloque[0];
+  const fecha = new Date(p.fecha + 'T12:00').toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' });
+  el.innerHTML = `
+    <div class="partido-info">
+      <div class="partido-nombre">Bloque Simultáneo ${p.bloqueId}</div>
+      <div class="partido-meta">${capitalizar(fecha)} · ${p.hora} hrs · Grupo ${p.grupo} — Jornada 3</div>
+      <div class="bloque-matches">
+        ${bloque.map(b => `<div class="bloque-match">P${b.id}: ${b.desc}</div>`).join('')}
+      </div>
+      <span class="badge badge-bloque">BLOQUE SIMULTÁNEO</span>
+    </div>`;
+}
+
+// ── PASO 2: GOLES ─────────────────────────────────────────────────────────
+function renderGolesForm() {
+  const form = document.getElementById('goles-form');
+  hide('monto-box'); hide('wrap-buscar');
+
+  if (currentBloque) {
+    form.innerHTML = `
+      <div class="goles-row">
+        ${currentBloque.map((p, i) => `
+          <div class="goles-item">
+            <span class="goles-text">P${p.id}: ${p.desc}</span>
+            <input type="number" class="goles-num" id="g${i}" min="0" max="20" placeholder="0">
+          </div>`).join('')}
+      </div>
+      <div class="goles-hint">El sistema usará el partido con más goles automáticamente</div>`;
+    document.getElementById('g0').addEventListener('input', onGolesChange);
+    document.getElementById('g1').addEventListener('input', onGolesChange);
+  } else {
+    form.innerHTML = `
+      <div class="goles-item">
+        <span class="goles-text">Goles totales del partido</span>
+        <input type="number" class="goles-num" id="g0" min="0" max="20" placeholder="0">
+      </div>`;
+    document.getElementById('g0').addEventListener('input', onGolesChange);
+  }
+}
+
+function onGolesChange() {
+  const g0 = parseInt(document.getElementById('g0')?.value || '0', 10) || 0;
+  const g1 = currentBloque ? (parseInt(document.getElementById('g1')?.value || '0', 10) || 0) : 0;
+  currentGoles = currentBloque ? Math.max(g0, g1) : g0;
+
+  const montoBox = document.getElementById('monto-box');
+  const montoNum = document.getElementById('monto-num');
+  hide('goles-err');
+
+  if (currentGoles < 1) { montoBox.classList.add('hidden'); hide('wrap-buscar'); return; }
+
+  const monto = currentGoles <= 2 ? 100 : currentGoles <= 4 ? 200 : 300;
+  montoNum.textContent = `$${monto}`;
+  montoBox.classList.remove('hidden');
+  show('wrap-buscar');
+}
+
+// ── PASO 3: BUSCAR ────────────────────────────────────────────────────────
+document.getElementById('btn-buscar').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-buscar');
+  btn.disabled = true;
+  btn.textContent = 'Buscando...';
+  hide('card-ok');
+
+  try {
+    const res = await apiFetch({ action: 'buscar', partidoId: currentPartido.id });
+    currentRegistros = res.registros || [];
+    renderResultados();
+    show('card-resultados');
+  } catch (err) {
+    mostrarError('goles-err', 'Error al buscar: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Buscar registrados';
+  }
+});
+
+function renderResultados() {
+  const badge     = document.getElementById('cnt-badge');
+  const tablaWrap = document.getElementById('tabla-wrap');
+  const sinReg    = document.getElementById('sin-reg');
+  const btnDisp   = document.getElementById('btn-disparar');
+
+  const unicos = new Set(currentRegistros.map(r => r.wa)).size;
+  badge.textContent = unicos;
+
+  if (unicos === 0) {
+    tablaWrap.innerHTML = '';
+    sinReg.classList.remove('hidden');
+    btnDisp.classList.add('hidden');
+    return;
+  }
+
+  sinReg.classList.add('hidden');
+  btnDisp.classList.remove('hidden');
+
+  const monto = currentGoles <= 2 ? 100 : currentGoles <= 4 ? 200 : 300;
+  btnDisp.textContent = `Disparar ${unicos} cupón${unicos > 1 ? 'es' : ''} de $${monto} c/u`;
+
+  tablaWrap.innerHTML = `
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Sucursal</th>
+            <th>WhatsApp</th>
+            <th>Email</th>
+            <th>Partido registrado</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${currentRegistros.map((r, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${r.sucursal || '—'}</td>
+              <td>${maskWA(r.wa)}</td>
+              <td>${maskEmail(r.email)}</td>
+              <td>${r.partido || '—'}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ── PASO 4: DISPARAR ──────────────────────────────────────────────────────
+document.getElementById('btn-disparar').addEventListener('click', async () => {
+  const unicos = new Set(currentRegistros.map(r => r.wa)).size;
+  const monto  = currentGoles <= 2 ? 100 : currentGoles <= 4 ? 200 : 300;
+
+  const ok = confirm(
+    `¿Confirmas el disparo?\n\n` +
+    `  Partido: ${currentPartido.bloqueId ? 'Bloque ' + currentPartido.bloqueId : currentPartido.desc}\n` +
+    `  Goles:   ${currentGoles}\n` +
+    `  Cupones: ${unicos} × $${monto} = $${(unicos * monto).toLocaleString('es-MX')}\n\n` +
+    `Esta acción no se puede deshacer.`
+  );
+  if (!ok) return;
+
+  const btn = document.getElementById('btn-disparar');
+  btn.disabled = true;
+  btn.textContent = 'Disparando...';
+
+  try {
+    const res = await apiFetch({ action: 'disparar', partidoId: currentPartido.id, goles: currentGoles });
+    renderConfirmacion(res);
+    // Ocultar pasos anteriores, mostrar confirmación
+    hide('card-partido'); hide('card-goles'); hide('wrap-buscar'); hide('card-resultados');
+    show('card-ok');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    alert('Error al disparar cupones: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = `Disparar ${unicos} cupón${unicos > 1 ? 'es' : ''} de $${monto} c/u`;
+  }
+});
+
+function renderConfirmacion(res) {
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-box">
+      <div class="stat-n verde">${res.generados}</div>
+      <div class="stat-l">Generados</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n">${res.omitidos}</div>
+      <div class="stat-l">Ya tenían cupón</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n oro">$${(res.montoTotal || 0).toLocaleString('es-MX')}</div>
+      <div class="stat-l">Monto total</div>
+    </div>`;
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────────
+document.getElementById('btn-nuevo').addEventListener('click', () => {
+  hide('card-ok');
+  show('card-partido');
+  inpId.value = '';
+  document.getElementById('partido-info').classList.add('hidden');
+  hide('card-goles'); hide('wrap-buscar'); hide('card-resultados');
+  currentPartido = null; currentBloque = null; currentGoles = 0; currentRegistros = [];
+  inpId.focus();
+});
+
+// ── API HELPER ────────────────────────────────────────────────────────────
+async function apiFetch(body) {
+  const res = await fetch('/.netlify/functions/panel', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json', 'x-panel-key': PANEL_KEY },
+    body:    JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.ok) throw new Error(data.error || 'Error desconocido');
+  return data;
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function show(id) { document.getElementById(id)?.classList.remove('hidden'); }
+function hide(id) { document.getElementById(id)?.classList.add('hidden'); }
+function mostrarError(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+function capitalizar(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function maskWA(wa) {
+  if (!wa || wa.length < 6) return wa || '—';
+  return wa.slice(0, 3) + '****' + wa.slice(-2);
+}
+function maskEmail(e) {
+  if (!e) return '—';
+  const [u, d] = e.split('@');
+  return (u || '').slice(0, 2) + '***@' + (d || '');
+}
+</script>
+</body>
+</html>
