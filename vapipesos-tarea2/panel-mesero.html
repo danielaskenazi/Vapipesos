@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Validar Cupón — Vapipesos</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rojo:  #d8213b;
+    --negro: #0d0d0d;
+    --card:  #141414;
+    --card2: #1e1e1e;
+    --crema: #faf7f2;
+    --gris:  #888;
+    --verde: #00a86b;
+    --oro:   #f5c518;
+    --rojo-claro: #ff5c6e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--negro);
+    color: var(--crema);
+    min-height: 100vh;
+    /* Centrar en pantalla de teléfono */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── PASSWORD ─────────────────────────────────────────────────────── */
+  #overlay {
+    position: fixed; inset: 0;
+    background: var(--negro);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; padding: 24px;
+  }
+
+  .pass-card {
+    background: var(--card);
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    padding: 40px 28px;
+    width: 100%; max-width: 340px;
+    text-align: center;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; letter-spacing: 4px; color: var(--rojo);
+    margin-bottom: 4px;
+  }
+  .logo-sub { font-size: 13px; color: var(--gris); margin-bottom: 32px; }
+
+  /* ── INPUTS ───────────────────────────────────────────────────────── */
+  input {
+    width: 100%;
+    background: var(--card2);
+    border: 1.5px solid #2e2e2e;
+    border-radius: 12px;
+    color: var(--crema);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input:focus { border-color: var(--rojo); }
+
+  .inp-pass { font-size: 16px; padding: 14px 18px; }
+
+  .inp-codigo {
+    font-size: 26px; font-weight: 600;
+    padding: 18px 16px;
+    text-align: center;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .inp-codigo::placeholder { font-size: 18px; letter-spacing: 1px; font-weight: 400; color: #444; }
+
+  /* ── BUTTONS ──────────────────────────────────────────────────────── */
+  .btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; padding: 16px;
+    border-radius: 12px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+    cursor: pointer; transition: opacity .2s, transform .1s;
+    letter-spacing: .3px;
+  }
+  .btn:active:not(:disabled) { transform: scale(.97); }
+  .btn:disabled { opacity: .35; cursor: not-allowed; }
+
+  .btn-rojo  { background: var(--rojo);  color: #fff; }
+  .btn-verde { background: var(--verde); color: #fff; font-size: 18px; padding: 18px; }
+  .btn-gris  { background: var(--card2); color: var(--gris); border: 1px solid #333; }
+
+  /* ── MAIN ─────────────────────────────────────────────────────────── */
+  #panel {
+    display: none;
+    width: 100%; max-width: 420px;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .top-bar {
+    background: var(--card);
+    border-bottom: 1px solid #1e1e1e;
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%;
+  }
+
+  .top-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--rojo); letter-spacing: 2px; }
+  .top-sub  { font-size: 11px; color: var(--gris); margin-top: 1px; }
+
+  .btn-salir {
+    background: none; border: 1px solid #333; border-radius: 8px;
+    color: var(--gris); font-size: 12px; padding: 5px 12px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-salir:hover { border-color: #555; color: var(--crema); }
+
+  .main-body { padding: 24px 20px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+
+  /* ── CARD ─────────────────────────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .card-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--gris); margin-bottom: 12px;
+  }
+
+  /* ── RESULTADO ────────────────────────────────────────────────────── */
+  .resultado {
+    border-radius: 16px; padding: 24px 20px;
+    text-align: center;
+    border: 2px solid transparent;
+  }
+
+  .resultado.valido {
+    background: rgba(0,168,107,.1);
+    border-color: rgba(0,168,107,.35);
+  }
+  .resultado.invalido {
+    background: rgba(216,33,59,.1);
+    border-color: rgba(216,33,59,.3);
+  }
+  .resultado.usado {
+    background: rgba(136,136,136,.08);
+    border-color: #333;
+  }
+
+  .res-icono { font-size: 48px; margin-bottom: 8px; }
+
+  .res-titulo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .res-titulo.verde { color: var(--verde); }
+  .res-titulo.rojo  { color: var(--rojo-claro); }
+  .res-titulo.gris  { color: var(--gris); }
+
+  .res-sub { font-size: 14px; color: var(--gris); margin-bottom: 16px; }
+
+  /* Detalle del cupón */
+  .cupon-detalle {
+    background: var(--card2);
+    border-radius: 10px; padding: 14px 16px;
+    text-align: left; margin-top: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .det-row { display: flex; justify-content: space-between; align-items: center; }
+  .det-lbl { font-size: 12px; color: var(--gris); }
+  .det-val { font-size: 13px; color: var(--crema); font-weight: 500; }
+
+  .monto-grande {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; color: var(--oro);
+    letter-spacing: 2px; line-height: 1;
+    margin: 8px 0 4px;
+  }
+  .monto-hint { font-size: 12px; color: var(--gris); }
+
+  /* ── ERROR ────────────────────────────────────────────────────────── */
+  .err {
+    background: rgba(216,33,59,.1); border: 1px solid rgba(216,33,59,.3);
+    color: #ff8090; border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; margin-top: 10px;
+  }
+
+  /* ── UTILS ────────────────────────────────────────────────────────── */
+  .hidden  { display: none !important; }
+  .mt-12   { margin-top: 12px; }
+  .mt-16   { margin-top: 16px; }
+  .w-full  { width: 100%; }
+</style>
+</head>
+<body>
+
+<!-- ── PASSWORD ───────────────────────────────────────────────────────────── -->
+<div id="overlay">
+  <div class="pass-card">
+    <div class="logo">VAPIPESOS</div>
+    <div class="logo-sub">Validación de cupones · Mesero</div>
+    <input type="password" class="inp-pass" id="inp-pass"
+      placeholder="Contraseña" autocomplete="current-password">
+    <div id="pass-err" class="err hidden">Contraseña incorrecta</div>
+    <button class="btn btn-rojo mt-16" id="btn-ingresar">Ingresar</button>
+  </div>
+</div>
+
+<!-- ── PANEL ──────────────────────────────────────────────────────────────── -->
+<div id="panel">
+
+  <div class="top-bar">
+    <div>
+      <div class="top-logo">VAPIPESOS</div>
+      <div class="top-sub">Validar cupón</div>
+    </div>
+    <button class="btn-salir" id="btn-salir">Salir</button>
+  </div>
+
+  <div class="main-body">
+
+    <!-- Input del código -->
+    <div class="card">
+      <div class="card-label">Código del cupón</div>
+      <input type="text" class="inp-codigo" id="inp-codigo"
+        placeholder="VAPI-XXXX-XXXX"
+        maxlength="14" autocomplete="off" autocorrect="off"
+        spellcheck="false" inputmode="text">
+      <div id="codigo-err" class="err hidden"></div>
+      <button class="btn btn-rojo mt-12" id="btn-verificar" disabled>
+        Verificar cupón
+      </button>
+    </div>
+
+    <!-- Resultado -->
+    <div id="sec-resultado" class="hidden"></div>
+
+    <!-- Botón canjear (solo si es válido) -->
+    <button class="btn btn-verde hidden" id="btn-canjear">
+      ✓ &nbsp; Canjear — aplicar $<span id="monto-btn">0</span> de descuento
+    </button>
+
+    <!-- Botón nueva búsqueda (después de canjear) -->
+    <button class="btn btn-gris hidden mt-12" id="btn-nuevo">
+      Verificar otro cupón
+    </button>
+
+  </div>
+</div>
+
+<script>
+const MESERO_KEY = 'mesero2026';
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+const overlay  = document.getElementById('overlay');
+const inpPass  = document.getElementById('inp-pass');
+const btnIngr  = document.getElementById('btn-ingresar');
+const passErr  = document.getElementById('pass-err');
+
+function autenticar() {
+  if (inpPass.value === MESERO_KEY) {
+    overlay.style.display  = 'none';
+    const panel = document.getElementById('panel');
+    panel.style.display = 'flex';
+    sessionStorage.setItem('vp_mesero', '1');
+    setTimeout(() => document.getElementById('inp-codigo').focus(), 200);
+  } else {
+    passErr.classList.remove('hidden');
+    inpPass.value = '';
+    inpPass.focus();
+  }
+}
+
+btnIngr.addEventListener('click', autenticar);
+inpPass.addEventListener('keydown', e => { if (e.key === 'Enter') autenticar(); });
+document.getElementById('btn-salir').addEventListener('click', () => {
+  sessionStorage.removeItem('vp_mesero');
+  location.reload();
+});
+
+if (sessionStorage.getItem('vp_mesero') === '1') {
+  overlay.style.display = 'none';
+  document.getElementById('panel').style.display = 'flex';
+}
+
+// ── FORMATO AUTOMÁTICO VAPI-XXXX-XXXX ────────────────────────────────────
+const inpCodigo   = document.getElementById('inp-codigo');
+const btnVerif    = document.getElementById('btn-verificar');
+
+inpCodigo.addEventListener('input', () => {
+  let v = inpCodigo.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  // Reconstruir formato VAPI-XXXX-XXXX
+  // Primeros 4 = "VAPI", luego 4, luego 4
+  let out = '';
+  if (v.length > 0)  out  = v.slice(0, 4);
+  if (v.length > 4)  out += '-' + v.slice(4, 8);
+  if (v.length > 8)  out += '-' + v.slice(8, 12);
+
+  inpCodigo.value = out;
+
+  // Habilitar botón solo cuando el código está completo (VAPI-XXXX-XXXX = 14 chars)
+  btnVerif.disabled = out.length < 14;
+
+  // Ocultar resultado si el usuario modifica el código
+  hide('sec-resultado');
+  hide('btn-canjear');
+  hide('btn-nuevo');
+  hide('codigo-err');
+});
+
+inpCodigo.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !btnVerif.disabled) btnVerif.click();
+});
+
+// ── VERIFICAR ─────────────────────────────────────────────────────────────
+let cuponActual = null;
+
+btnVerif.addEventListener('click', async () => {
+  const codigo = inpCodigo.value.trim();
+  if (codigo.length < 14) return;
+
+  btnVerif.disabled  = true;
+  btnVerif.textContent = 'Verificando...';
+  hide('sec-resultado'); hide('btn-canjear'); hide('btn-nuevo'); hide('codigo-err');
+  cuponActual = null;
+
+  try {
+    const res = await apiFetch({ action: 'buscar', codigo });
+    renderResultado(res);
+  } catch (err) {
+    mostrarError('codigo-err', 'Error de conexión: ' + err.message);
+  } finally {
+    btnVerif.disabled  = false;
+    btnVerif.textContent = 'Verificar cupón';
+  }
+});
+
+// ── RENDER RESULTADO ──────────────────────────────────────────────────────
+function renderResultado(res) {
+  const sec = document.getElementById('sec-resultado');
+  sec.classList.remove('hidden');
+
+  if (res.estado === 'no_encontrado') {
+    sec.innerHTML = `
+      <div class="resultado invalido">
+        <div class="res-icono">❌</div>
+        <div class="res-titulo rojo">Cupón no encontrado</div>
+        <div class="res-sub">El código no existe. Verifica que esté bien escrito.</div>
+      </div>`;
+    return;
+  }
+
+  if (res.estado === 'ya_canjeado') {
+    sec.innerHTML = `
+      <div class="resultado usado">
+        <div class="res-icono">🔒</div>
+        <div class="res-titulo gris">Ya fue canjeado</div>
+        <div class="res-sub">Este cupón ya fue utilizado anteriormente.</div>
+        ${detalleHTML(res.cupon)}
+      </div>`;
+    return;
+  }
+
+  if (res.estado === 'vencido') {
+    sec.innerHTML = `
+      <div class="resultado invalido">
+        <div class="res-icono">⏰</div>
+        <div class="res-titulo rojo">Cupón vencido</div>
+        <div class="res-sub">Venció el ${res.cupon.fechaVenc}. No es válido.</div>
+        ${detalleHTML(res.cupon)}
+      </div>`;
+    return;
+  }
+
+  // VÁLIDO
+  cuponActual = res.cupon;
+  sec.innerHTML = `
+    <div class="resultado valido">
+      <div class="res-icono">✅</div>
+      <div class="res-titulo verde">Cupón válido</div>
+      <div class="monto-grande">$${res.cupon.monto}</div>
+      <div class="monto-hint">de descuento · consumo mínimo $400</div>
+      ${detalleHTML(res.cupon)}
+    </div>`;
+
+  document.getElementById('monto-btn').textContent = res.cupon.monto;
+  show('btn-canjear');
+}
+
+function detalleHTML(c) {
+  if (!c) return '';
+  return `
+    <div class="cupon-detalle">
+      <div class="det-row">
+        <span class="det-lbl">Código</span>
+        <span class="det-val" style="font-family:monospace;letter-spacing:1px">${c.codigo}</span>
+      </div>
+      <div class="det-row">
+        <span class="det-lbl">Sucursal</span>
+        <span class="det-val">${c.sucursal || '—'}</span>
+      </div>
+      <div class="det-row">
+        <span class="det-lbl">Partido</span>
+        <span class="det-val">${c.partido || '—'}</span>
+      </div>
+      <div class="det-row">
+        <span class="det-lbl">Vence</span>
+        <span class="det-val">${c.fechaVenc || '—'}</span>
+      </div>
+    </div>`;
+}
+
+// ── CANJEAR ───────────────────────────────────────────────────────────────
+const btnCanjear = document.getElementById('btn-canjear');
+btnCanjear.addEventListener('click', async () => {
+  if (!cuponActual) return;
+
+  btnCanjear.disabled    = true;
+  btnCanjear.textContent = 'Canjeando...';
+
+  try {
+    const res = await apiFetch({ action: 'canjear', codigo: cuponActual.codigo });
+
+    if (res.estado === 'canjeado') {
+      // Actualizar pantalla a canjeado exitoso
+      document.getElementById('sec-resultado').innerHTML = `
+        <div class="resultado valido">
+          <div class="res-icono">🎉</div>
+          <div class="res-titulo verde">¡Canjeado!</div>
+          <div class="monto-grande">$${cuponActual.monto}</div>
+          <div class="monto-hint">descuento aplicado · código marcado como usado</div>
+          ${detalleHTML(cuponActual)}
+        </div>`;
+      hide('btn-canjear');
+      show('btn-nuevo');
+      cuponActual = null;
+    } else {
+      // Por si cambió el estado entre verificar y canjear
+      renderResultado(res);
+      btnCanjear.disabled    = false;
+      btnCanjear.innerHTML   = `✓ &nbsp; Canjear — aplicar $<span id="monto-btn">${cuponActual?.monto || 0}</span> de descuento`;
+    }
+  } catch (err) {
+    mostrarError('codigo-err', 'Error al canjear: ' + err.message);
+    btnCanjear.disabled    = false;
+    btnCanjear.innerHTML   = `✓ &nbsp; Canjear — aplicar $<span id="monto-btn">${cuponActual?.monto || 0}</span> de descuento`;
+  }
+});
+
+// ── NUEVO ─────────────────────────────────────────────────────────────────
+document.getElementById('btn-nuevo').addEventListener('click', () => {
+  inpCodigo.value = '';
+  btnVerif.disabled = true;
+  hide('sec-resultado'); hide('btn-canjear'); hide('btn-nuevo'); hide('codigo-err');
+  cuponActual = null;
+  inpCodigo.focus();
+});
+
+// ── API HELPER ────────────────────────────────────────────────────────────
+async function apiFetch(body) {
+  const res = await fetch('/.netlify/functions/canjear', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json', 'x-panel-key': MESERO_KEY },
+    body:    JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.ok) throw new Error(data.error || 'Error desconocido');
+  return data;
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function show(id) { document.getElementById(id)?.classList.remove('hidden'); }
+function hide(id) { document.getElementById(id)?.classList.add('hidden'); }
+function mostrarError(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+</script>
+</body>
+</html>
