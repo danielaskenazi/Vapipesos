@@ -26,7 +26,6 @@
     min-height: 100vh;
   }
 
-  /* ── PASSWORD OVERLAY ─────────────────────────────────────────────── */
   #overlay {
     position: fixed; inset: 0;
     background: var(--negro);
@@ -51,7 +50,6 @@
 
   .pass-sub { font-size: 13px; color: var(--gris); margin-bottom: 28px; }
 
-  /* ── INPUTS ───────────────────────────────────────────────────────── */
   input[type="password"],
   input[type="number"] {
     width: 100%;
@@ -70,7 +68,6 @@
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
 
-  /* ── BUTTONS ──────────────────────────────────────────────────────── */
   .btn {
     display: flex; align-items: center; justify-content: center;
     width: 100%; padding: 13px 24px;
@@ -85,7 +82,6 @@
   .btn-secondary { background: transparent; color: var(--rojo); border: 1.5px solid var(--rojo); }
   .btn-success   { background: var(--verde); color: #fff; }
 
-  /* ── MAIN PANEL ───────────────────────────────────────────────────── */
   #panel { display: none; }
 
   .panel-header {
@@ -111,7 +107,6 @@
     display: flex; flex-direction: column; gap: 14px;
   }
 
-  /* ── CARDS ────────────────────────────────────────────────────────── */
   .card {
     background: var(--card);
     border: 1px solid #222;
@@ -125,7 +120,6 @@
     color: var(--gris); margin-bottom: 14px;
   }
 
-  /* ── PARTIDO INFO ─────────────────────────────────────────────────── */
   .partido-info {
     background: var(--card2); border-radius: 10px; padding: 14px 16px;
     margin-top: 12px;
@@ -148,7 +142,6 @@
   }
   .badge-bloque { background: rgba(216,33,59,.15); color: var(--rojo); border: 1px solid rgba(216,33,59,.3); }
 
-  /* ── GOLES ────────────────────────────────────────────────────────── */
   .goles-row { display: flex; flex-direction: column; gap: 10px; }
 
   .goles-item {
@@ -177,7 +170,6 @@
     color: var(--oro); letter-spacing: 1px;
   }
 
-  /* ── TABLE ────────────────────────────────────────────────────────── */
   .table-scroll { overflow-x: auto; margin-top: 12px; }
 
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -199,7 +191,6 @@
     font-size: 12px; font-weight: 600; margin-left: 8px;
   }
 
-  /* ── SUCCESS ──────────────────────────────────────────────────────── */
   .success-title {
     font-family: 'Bebas Neue', sans-serif; font-size: 24px;
     color: var(--verde); letter-spacing: 1px; margin-bottom: 16px;
@@ -216,7 +207,6 @@
   .stat-n.oro   { color: var(--oro); }
   .stat-l { font-size: 10px; color: var(--gris); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px; }
 
-  /* ── ERROR ────────────────────────────────────────────────────────── */
   .err {
     background: rgba(216,33,59,.1); border: 1px solid rgba(216,33,59,.3);
     color: #ff8090; border-radius: 8px; padding: 10px 14px;
@@ -225,7 +215,6 @@
 
   .empty { text-align: center; padding: 24px; color: var(--gris); font-size: 14px; }
 
-  /* ── UTILS ────────────────────────────────────────────────────────── */
   .hidden { display: none !important; }
   .mt-12  { margin-top: 12px; }
   .mt-16  { margin-top: 16px; }
@@ -239,7 +228,6 @@
 </head>
 <body>
 
-<!-- ── PASSWORD OVERLAY ──────────────────────────────────────────────────── -->
 <div id="overlay">
   <div class="pass-card">
     <div class="pass-logo">VAPIPESOS</div>
@@ -250,7 +238,6 @@
   </div>
 </div>
 
-<!-- ── MAIN PANEL ─────────────────────────────────────────────────────────── -->
 <div id="panel">
 
   <div class="panel-header">
@@ -263,7 +250,6 @@
 
   <div class="panel-body">
 
-    <!-- PASO 1: Partido -->
     <div class="card" id="card-partido">
       <div class="card-label">Paso 1 — Partido</div>
       <input type="number" id="inp-id" min="1" max="104"
@@ -272,7 +258,6 @@
       <div id="partido-err" class="err hidden"></div>
     </div>
 
-    <!-- PASO 2: Goles -->
     <div class="card hidden" id="card-goles">
       <div class="card-label">Paso 2 — Goles del partido</div>
       <div id="goles-form"></div>
@@ -283,12 +268,10 @@
       <div id="goles-err" class="err hidden"></div>
     </div>
 
-    <!-- PASO 3: Buscar -->
     <div class="hidden" id="wrap-buscar">
       <button class="btn btn-secondary" id="btn-buscar">Buscar registrados</button>
     </div>
 
-    <!-- PASO 4: Resultados -->
     <div class="card hidden" id="card-resultados">
       <div class="card-label">
         Personas registradas
@@ -299,7 +282,6 @@
       <button class="btn btn-primary mt-16 hidden" id="btn-disparar">Disparar cupones</button>
     </div>
 
-    <!-- PASO 5: Confirmación -->
     <div class="card hidden" id="card-ok">
       <div class="success-title">✓ Cupones disparados</div>
       <div class="stats-grid" id="stats-grid"></div>
@@ -310,7 +292,6 @@
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────────
 const PANEL_KEY = 'vapiano2026';
 
 const PARTIDOS = [
@@ -420,13 +401,11 @@ const PARTIDOS = [
   {id:104, fecha:'2026-07-19', hora:'13:00', grupo:'Final', desc:'Gran Final — Copa Mundial 2026'},
 ];
 
-// ── ESTADO ────────────────────────────────────────────────────────────────
 let currentPartido  = null;
-let currentBloque   = null;   // array[2] si es bloque simultáneo
+let currentBloque   = null;
 let currentGoles    = 0;
 let currentRegistros = [];
 
-// ── AUTH ──────────────────────────────────────────────────────────────────
 const overlay    = document.getElementById('overlay');
 const inpPass    = document.getElementById('inp-pass');
 const btnIngr    = document.getElementById('btn-ingresar');
@@ -456,14 +435,11 @@ if (sessionStorage.getItem('vp_auth') === '1') {
   document.getElementById('panel').style.display = 'block';
 }
 
-// ── PASO 1: PARTIDO ───────────────────────────────────────────────────────
 const inpId = document.getElementById('inp-id');
 inpId.addEventListener('input', onPartidoChange);
 
 function onPartidoChange() {
   const id = parseInt(inpId.value, 10);
-
-  // Resetear pasos siguientes
   hide('card-goles'); hide('wrap-buscar'); hide('card-resultados'); hide('card-ok');
   currentPartido = null; currentBloque = null; currentGoles = 0; currentRegistros = [];
 
@@ -519,7 +495,6 @@ function renderBloqueInfo(el, bloque) {
     </div>`;
 }
 
-// ── PASO 2: GOLES ─────────────────────────────────────────────────────────
 function renderGolesForm() {
   const form = document.getElementById('goles-form');
   hide('monto-box'); hide('wrap-buscar');
@@ -563,7 +538,6 @@ function onGolesChange() {
   show('wrap-buscar');
 }
 
-// ── PASO 3: BUSCAR ────────────────────────────────────────────────────────
 document.getElementById('btn-buscar').addEventListener('click', async () => {
   const btn = document.getElementById('btn-buscar');
   btn.disabled = true;
@@ -601,6 +575,7 @@ function renderResultados() {
 
   sinReg.classList.add('hidden');
   btnDisp.classList.remove('hidden');
+  btnDisp.disabled = false;
 
   const monto = currentGoles <= 2 ? 100 : currentGoles <= 4 ? 200 : 300;
   btnDisp.textContent = `Disparar ${unicos} cupón${unicos > 1 ? 'es' : ''} de $${monto} c/u`;
@@ -631,7 +606,6 @@ function renderResultados() {
     </div>`;
 }
 
-// ── PASO 4: DISPARAR ──────────────────────────────────────────────────────
 document.getElementById('btn-disparar').addEventListener('click', async () => {
   const unicos = new Set(currentRegistros.map(r => r.wa)).size;
   const monto  = currentGoles <= 2 ? 100 : currentGoles <= 4 ? 200 : 300;
@@ -652,7 +626,6 @@ document.getElementById('btn-disparar').addEventListener('click', async () => {
   try {
     const res = await apiFetch({ action: 'disparar', partidoId: currentPartido.id, goles: currentGoles });
     renderConfirmacion(res);
-    // Ocultar pasos anteriores, mostrar confirmación
     hide('card-partido'); hide('card-goles'); hide('wrap-buscar'); hide('card-resultados');
     show('card-ok');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -685,7 +658,6 @@ function renderConfirmacion(res) {
     </div>`;
 }
 
-// ── RESET ─────────────────────────────────────────────────────────────────
 document.getElementById('btn-nuevo').addEventListener('click', () => {
   hide('card-ok');
   show('card-partido');
@@ -696,7 +668,6 @@ document.getElementById('btn-nuevo').addEventListener('click', () => {
   inpId.focus();
 });
 
-// ── API HELPER ────────────────────────────────────────────────────────────
 async function apiFetch(body) {
   const res = await fetch('/.netlify/functions/panel', {
     method:  'POST',
@@ -708,7 +679,6 @@ async function apiFetch(body) {
   return data;
 }
 
-// ── UTILS ─────────────────────────────────────────────────────────────────
 function show(id) { document.getElementById(id)?.classList.remove('hidden'); }
 function hide(id) { document.getElementById(id)?.classList.add('hidden'); }
 function mostrarError(id, msg) {
