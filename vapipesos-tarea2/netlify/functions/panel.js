@@ -209,7 +209,8 @@ async function dispararCupones(token, sheetId, partido, goles, monto) {
 
   // Leer cupones existentes para evitar duplicados (1 cupón por WA por partido/bloque)
   const existingRows = await readSheet(token, sheetId, 'Cupones!A:I');
-  const partidoKey   = partido.bloqueId || partido.desc;
+  // Usar partidoLabel (lo que realmente se guarda en columna D) para comparar
+  const partidoKey   = partido.bloqueId ? `Bloque ${partido.bloqueId}` : partido.desc;
   const yaEnviados   = new Set(
     (existingRows || []).slice(1)
       .filter(r => (r[3] || '') === partidoKey)
