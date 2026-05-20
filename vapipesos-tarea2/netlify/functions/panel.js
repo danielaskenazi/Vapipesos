@@ -246,14 +246,18 @@ async function dispararCupones(token, sheetId, partido, goles, monto) {
     });
   }
 
+  let waEnviados = 0;
+  let waErrores  = 0;
+
   if (nuevos.length > 0) {
     const values = nuevos.map(c => [c.codigo, c.wa, c.email, c.partido, c.sucursal, c.monto, c.fechaEmision, c.fechaVenc, 'No']);
     await appendToSheet(token, sheetId, 'Cupones', values);
 
-    // ── TAREA 3: aquí irá el envío por WhatsApp Cloud API ──────────────────
-    for (const c of nuevos) {
-      console.log(`[WHATSAPP-TODO] → ${c.wa} | Código: ${c.codigo} | Descuento: $${c.monto} | Válido hasta: ${c.fechaVenc}`);
-    }
+    // ── Envío por WhatsApp via Twilio ──────────────────────────────────────
+    const waResults = await Promise.allSettled(nuevos.map(c => sendWhatsApp(c)));
+    waEnviados = waResults.filter(r => r.status === 'fulfilled').length;
+    waErrores  = waResults.filter(r => r.status === 'rejected').length;
+    if (waErrores > 0) console.warn(`[panel] ${waErrores} mensajes de WhatsApp no se pudieron enviar`);
   }
 
   return {
@@ -261,6 +265,8 @@ async function dispararCupones(token, sheetId, partido, goles, monto) {
     omitidos:    omitidos.length,
     montoTotal:  nuevos.length * monto,
     cupones:     nuevos,
+    waEnviados,
+    waErrores,
   };
 }
 
@@ -269,6 +275,56 @@ function generarCodigo() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0,O,1,I para evitar confusión
   const seg   = () => Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
   return `VAPI-${seg()}-${seg()}`;
+}
+
+// ── Enviar WhatsApp via Twilio REST API ───────────────────────────────────
+async function sendWhatsApp({ wa, codigo, monto, fechaVenc }) {
+  const ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+  const AUTH_TOKEN  = process.env.TWILIO_AUTH_TOKEN;
+  const FROM        = process.env.TWILIO_WHATSAPP_FROM; // whatsapp:+5213339624559
+
+  if (!ACCOUNT_SID || !AUTH_TOKEN || !FROM) {
+    throw new Error('Faltan credenciales de Twilio en variables de entorno');
+  }
+
+  const to      = formatWA(wa);
+  const mensaje =
+    `🎉 ¡Ganaste un Vapipeso! Tu código de descuento es: ${codigo}\n` +
+    `Descuento: $${monto} MXN\n` +
+    `Válido hasta: ${fechaVenc}\n` +
+    `Consumo mínimo $400. Preséntalo a tu mesero.`;
+
+  const url  = `https://api.twilio.com/2010-04-01/Accounts/${ACCOUNT_SID}/Messages.json`;
+  const auth = Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toString('base64');
+
+  const res = await fetch(url, {
+    method:  'POST',
+    headers: {
+      Authorization:  `Basic ${auth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({ From: FROM, To: to, Body: mensaje }).toString(),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`Twilio error ${res.status}: ${err.message || res.statusText}`);
+  }
+
+  const data = await res.json();
+  console.log(`[WA] Enviado a ${to} → SID: ${data.sid}`);
+  return data.sid;
+}
+
+// ── Formatear número como whatsapp:+52XXXXXXXXXX ──────────────────────────
+function formatWA(num) {
+  const digits = (num || '').replace(/\D/g, '');
+  // 10 dígitos → México sin código de país
+  if (digits.length === 10) return `whatsapp:+52${digits}`;
+  // Ya tiene código de país (52 + 10 dígitos = 12)
+  if (digits.startsWith('52') && digits.length >= 12) return `whatsapp:+${digits}`;
+  // Cualquier otro formato: agregar + y dejar como está
+  return `whatsapp:+${digits}`;
 }
 
 // ── Crear hoja si no existe ───────────────────────────────────────────────
