@@ -4,7 +4,8 @@
 //   GOOGLE_SHEET_ID, GOOGLE_SERVICE_EMAIL, GOOGLE_PRIVATE_KEY
 // Autenticación via header: x-panel-key: vapiano2026
 
-const PANEL_KEY = process.env.PANEL_KEY || 'vapiano2026';
+const PANEL_KEY  = process.env.PANEL_KEY  || 'vapiano2026';
+const CONTENT_SID = process.env.TWILIO_CONTENT_SID || 'HX2eb812f8217e0ec9890820655a12a210';
 
 const PARTIDOS = [
   // JORNADA 1
@@ -282,21 +283,28 @@ function generarCodigo() {
 async function sendWhatsApp({ wa, codigo, monto, fechaVenc }) {
   const ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
   const AUTH_TOKEN  = process.env.TWILIO_AUTH_TOKEN;
-  const FROM        = process.env.TWILIO_WHATSAPP_FROM; // whatsapp:+5213339624559
+  const FROM        = process.env.TWILIO_WHATSAPP_FROM;
 
   if (!ACCOUNT_SID || !AUTH_TOKEN || !FROM) {
     throw new Error('Faltan credenciales de Twilio en variables de entorno');
   }
 
-  const to      = formatWA(wa);
-  const mensaje =
-    `🎉 ¡Ganaste un Vapipeso! Tu código de descuento es: ${codigo}\n` +
-    `Descuento: $${monto} MXN\n` +
-    `Válido hasta: ${fechaVenc}\n` +
-    `Consumo mínimo $400. Preséntalo a tu mesero.`;
-
+  const to   = formatWA(wa);
   const url  = `https://api.twilio.com/2010-04-01/Accounts/${ACCOUNT_SID}/Messages.json`;
   const auth = Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toString('base64');
+
+  // ── Plantilla aprobada por Meta (vapipesos_cupon) ─────────────────────────
+  // Variables: "1"=codigo  "2"=monto  "3"=fechaVenc
+  const params = {
+    From:             FROM,
+    To:               to,
+    ContentSid:       CONTENT_SID,
+    ContentVariables: JSON.stringify({
+      '1': String(codigo),
+      '2': String(monto),
+      '3': String(fechaVenc),
+    }),
+  };
 
   const res = await fetch(url, {
     method:  'POST',
@@ -304,7 +312,7 @@ async function sendWhatsApp({ wa, codigo, monto, fechaVenc }) {
       Authorization:  `Basic ${auth}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: new URLSearchParams({ From: FROM, To: to, Body: mensaje }).toString(),
+    body: new URLSearchParams(params).toString(),
   });
 
   if (!res.ok) {
@@ -313,18 +321,16 @@ async function sendWhatsApp({ wa, codigo, monto, fechaVenc }) {
   }
 
   const data = await res.json();
-  console.log(`[WA] Enviado a ${to} → SID: ${data.sid}`);
+  console.log(`[WA] Plantilla vapipesos_cupon → ${to} → SID: ${data.sid}`);
   return data.sid;
 }
 
 // ── Formatear número como whatsapp:+52XXXXXXXXXX ──────────────────────────
 function formatWA(num) {
   const digits = (num || '').replace(/\D/g, '');
-  // 10 dígitos → México sin código de país
   if (digits.length === 10) return `whatsapp:+52${digits}`;
-  // Ya tiene código de país (52 + 10 dígitos = 12)
+  if (digits.length === 11 && digits.startsWith('1')) return `whatsapp:+52${digits.slice(1)}`;
   if (digits.startsWith('52') && digits.length >= 12) return `whatsapp:+${digits}`;
-  // Cualquier otro formato: agregar + y dejar como está
   return `whatsapp:+${digits}`;
 }
 
