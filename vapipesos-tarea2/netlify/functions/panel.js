@@ -175,15 +175,15 @@ exports.handler = async (event) => {
 
 // ── Buscar registros en Sheets ────────────────────────────────────────────
 async function getRegistros(token, sheetId, partido) {
-  const rows = await readSheet(token, sheetId, 'Registros!A:H');
+  const rows = await readSheet(token, sheetId, 'Registros!A:I');
   if (!rows || rows.length <= 1) return [];
 
   const data = rows.slice(1); // omitir encabezado
 
   // Filtro: por BloqueID si es Jornada 3, por descripción si es individual
   const filter = partido.bloqueId
-    ? r => (r[6] || '').trim() === partido.bloqueId
-    : r => (r[4] || '').trim() === partido.desc;
+    ? r => (r[7] || '').trim() === partido.bloqueId
+    : r => (r[5] || '').trim() === partido.desc;
 
   return data
     .filter(filter)
@@ -191,10 +191,11 @@ async function getRegistros(token, sheetId, partido) {
       timestamp: r[0] || '',
       sucursal:  r[1] || '',
       wa:        r[2] || '',
-      email:     r[3] || '',
-      partido:   r[4] || '',
-      hora:      r[5] || '',
-      bloqueId:  r[6] || '',
+      nombre:    r[3] || '',
+      email:     r[4] || '',
+      partido:   r[5] || '',
+      hora:      r[6] || '',
+      bloqueId:  r[7] || '',
     }))
     .filter(r => r.wa); // descartar filas sin WhatsApp
 }
