@@ -1067,6 +1067,10 @@ function abrirModal() {
     <h2>Registrar VAPIs</h2>
     <div class="partido-confirmado">⚽ ${seleccionado.label} · ${seleccionado.hora} hrs</div>
     <div class="form-group">
+      <label>Nombre</label>
+      <input type="text" id="input-nombre" placeholder="Tu nombre" autocomplete="given-name">
+    </div>
+    <div class="form-group">
       <label>WhatsApp</label>
       <input type="tel" id="input-whatsapp" placeholder="55 1234 5678" inputmode="numeric" maxlength="15">
     </div>
@@ -1089,8 +1093,10 @@ function cerrarModalSiOverlay(e) {
 }
 
 async function confirmarRegistro() {
+  const nombre = document.getElementById('input-nombre').value.trim();
   const wa    = document.getElementById('input-whatsapp').value.trim();
   const email = document.getElementById('input-email').value.trim();
+  if (!nombre) { alert('Ingresa tu nombre.'); return; }
   if (!wa || wa.replace(/\D/g,'').length < 10) { alert('Ingresa un WhatsApp válido (10 dígitos).'); return; }
   if (!email || !email.includes('@')) { alert('Ingresa un correo electrónico válido.'); return; }
 
@@ -1102,7 +1108,7 @@ async function confirmarRegistro() {
     const res = await fetch('/.netlify/functions/registrar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ wa, email, partido: seleccionado, sucursal: sucursalKey }),
+      body: JSON.stringify({ nombre, wa, email, partido: seleccionado, sucursal: sucursalKey }),
     });
     if (!res.ok) throw new Error('Error del servidor');
   } catch (err) {
